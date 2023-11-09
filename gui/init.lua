@@ -1,6 +1,7 @@
 local gui = {
 	path = ...,
-	windows = {}
+	windows = {},
+	android = love.system.getOS() == "Android";
 };
 require(gui.path .. ".util")
 

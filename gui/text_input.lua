@@ -70,8 +70,14 @@ end
 function Input:mousepressed(x, y, b)
 	if b == 1 and math.point_in_box(x, y, self:box_full()) then
 		self.focused = true;
+		if ANDROID then -- TODO: Male this correctly
+			love.keyboard.setTextInput(true, self.x+self.window.x, self.y+self.window.y, self.w, self.h);
+		end
 	elseif self.focused == true then -- TODO: Do we need b == 1 here?
 		self.focused = false;
+		if ANDROID then
+			love.keyboard.setTextInput(false);
+		end
 		self.update_canvas = true;
 	end
 end
@@ -98,6 +104,9 @@ function Input:keypressed(key, scancode, is_repeat)
 		self.cursor_pos = math.max(0, self.cursor_pos - 1);
 	elseif key == "return" then -- TODO: How the fuck are we gonna do events?
 		self.focused = false;
+		if ANDROID then
+			love.keyboard.setTextInput(false);
+		end
 		self:call("finish_text");
 	end
 

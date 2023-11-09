@@ -1,6 +1,8 @@
 lg = love.graphics;
 utf8 = require "utf8"
 gui = require "gui"
+ANDROID = gui.android
+
 function love.load(args)
 	love.keyboard.setKeyRepeat(true);
 	lg.setLineStyle("rough");
@@ -15,6 +17,13 @@ function love.load(args)
 	end)]]
 
 	--main_win:add_element(gui.Label.new(0, 0, "sharpness"));
+
+	if gui.android then
+		love.window.setFullscreen(true);
+	end
+
+	local gui_instance = loadstring(get_file("instance/item_editor.lua"))
+	gui_instance(winc);
 end
 
 function love.update(dt)
@@ -35,6 +44,12 @@ function love.draw()
 	lg.setColor(1, 1, 1, 1);
 	lg.print(string.format("FPS: %d", love.timer.getFPS()), lg.getWidth() - 100, 16);
 
+	lg.setColor(1, 0, 0, 1);
+
+	local mx, my = love.mouse.getX(), love.mouse.getY();
+	lg.line(mx-10, my, mx+10, my);
+	lg.line(mx, my-10, mx, my+10);
+
 	--[[if other_draw then
 		other_draw();
 	end]]
@@ -54,10 +69,10 @@ end
 
 function love.keypressed(key, scancode, is_repeat)
 	gui:keypressed(key, scancode, is_repeat);
-	if key == "f4" then
-		local gui_instance = loadstring(get_file("instance/music_player.lua"))
+	--[[if key == "f4" then
+		local gui_instance = loadstring(get_file("instance/item_editor.lua"))
 		gui_instance(winc);
-	end
+	end]]
 end
 
 function love.textinput(t)
@@ -65,8 +80,9 @@ function love.textinput(t)
 end
 
 function get_file(file)
-    local f = assert(io.open(file, "rb"))
+    --[[local f = assert(io.open(file, "rb"))
     local content = f:read("*all")
     f:close()
-    return content
+    return content]]
+    return love.filesystem.read(file);
 end
