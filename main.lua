@@ -54,9 +54,9 @@ function love.draw()
 	lg.line(mx-10, my, mx+10, my);
 	lg.line(mx, my-10, mx, my+10);
 
-	--[[if other_draw then
+	if other_draw then
 		other_draw();
-	end]]
+	end
 end
 
 function love.mousemoved(x, y, dx, dy)

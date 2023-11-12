@@ -23,6 +23,10 @@ function math.uuid()
     return st
 end
 
+function math.clamp(x, m, M)
+	return math.max(m, math.min(M, x))
+end
+
 -- Returns whole division
 function math.euclid(a, b)
 	return (a - a%b)/b

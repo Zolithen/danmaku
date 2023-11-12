@@ -20,7 +20,7 @@ ll("Panel", "panel");
 ll("Label", "text_label")
 ll("TextInput", "text_input")
 ll("ClickableArea", "clickable");
-ll("ScrollBar", "scroll_bar")
+ll("Slider", "slider")
 
 ll("TextButton", "text_button");
 

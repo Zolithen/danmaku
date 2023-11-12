@@ -1,5 +1,6 @@
 local Skin = {
 	back = {0.2, 0.2, 0.2, 1},
+	back3 = {0.3, 0.3, 0.3, 1},
 	back_light = {0.4, 0.4, 0.4, 1},
 	back_highlight = {0.6, 0.6, 0.6, 1},
 	back_highlight2 = {0.7, 0.7, 0.7, 1},

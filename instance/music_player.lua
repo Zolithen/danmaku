@@ -27,8 +27,19 @@ laywide_add("Slowdive - Falling Ashes")
 laywide_add("Holy Fawn - Dimensional Bleed")
 laywide_add("death insurance - ohmyg0d")
 
+local bar = main:add_element(gui.Slider.new(
+	lg.getWidth()-16,
+	0,
+	16,
+	lg.getHeight()-16
+));
+
 function other_update()
 	--main.transy = main.transy - 1;
+end
+
+function other_draw()
+	lg.print(tostring(bar.boxx), 0, 160)
 end
 
 function love.resize(w, h)
@@ -38,4 +49,6 @@ function love.resize(w, h)
 	for i, v in ipairs(layout_wide) do
 		v.w = lg.getWidth()-16;
 	end
+	bar.x = lg.getWidth()-16;
+	bar.h = lg.getHeight()-16;
 end

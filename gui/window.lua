@@ -29,10 +29,18 @@ function Window.new(x, y, w, h, skin, id, title, controller)
 		expand_box_size = 16,
 		dragging = false, -- Is the window being dragged by the user?
 		bar_height = 16,
+		
+		-- Used for dragging the window around and expanding
 		dox = 0,
-		doy = 0, -- Stores the mouse's click position when the window starts being dragged
-		transx = 0, -- Controls the scroll of the window!
+		doy = 0,
+		
+		-- Window scroll
+		transx = 0,
 		transy = 0,
+
+		-- Scrollbar parameters
+		maxw = 0,
+		maxh = 0
 	};
 
 	setmetatable(self, {
@@ -132,6 +140,7 @@ function Window:draw()
 		lg.translate(-self.transx, -self.transy);
 		lg.setCanvas();
 
+		lg.setColor(1, 1, 1, 1);
 		lg.draw(self.canvas, self.x, self.y+self.bar_height);
 
 		-- Draw the expand box
