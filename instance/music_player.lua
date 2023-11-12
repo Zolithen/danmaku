@@ -7,10 +7,35 @@ main.expandable = false;
 	0, 0, "test"
 ));]]
 
-local clickable = main:add_element(gui.ClickableArea.new(
-	0, 0, 100, 100
-))
+local layout_wide = {}
+local layout_amount = 0;
+
+function laywide_add(t)
+	local a = main:add_element(gui.ClickableArea.new(
+		0, layout_amount*50, lg.getWidth()-16, 50
+	))
+	main:add_element(gui.Label.new(
+		0, layout_amount*50, t	
+	))
+	layout_amount = layout_amount + 1;
+
+	table.insert(layout_wide, a);
+	return a;
+end
+
+laywide_add("Slowdive - Falling Ashes")
+laywide_add("Holy Fawn - Dimensional Bleed")
+laywide_add("death insurance - ohmyg0d")
+
+function other_update()
+	--main.transy = main.transy - 1;
+end
 
 function love.resize(w, h)
 	main:resize(lg.getWidth(), lg.getHeight());
+
+	-- Handle the layout
+	for i, v in ipairs(layout_wide) do
+		v.w = lg.getWidth()-16;
+	end
 end

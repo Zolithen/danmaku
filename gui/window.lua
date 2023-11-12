@@ -31,6 +31,8 @@ function Window.new(x, y, w, h, skin, id, title, controller)
 		bar_height = 16,
 		dox = 0,
 		doy = 0, -- Stores the mouse's click position when the window starts being dragged
+		transx = 0, -- Controls the scroll of the window!
+		transy = 0,
 	};
 
 	setmetatable(self, {
@@ -120,11 +122,14 @@ function Window:draw()
 		lg.setColor(1, 1, 1, 1);
 		lg.setCanvas(self.canvas); -- TODO: Make it so we only draw to the canvas whenever we need updating the visual aspect
 		lg.clear();
+		lg.translate(self.transx, self.transy);
+		local tmx, tmy = self:to_window_cs(mx, my);
 		for i, v in ipairs(self.elements) do
 			if v.draw then
-				v:draw(mx - self.x, my - self.y - self.bar_height); -- We pass in the transformed mouse coordinates
+				v:draw(tmx, tmy); -- We pass in the transformed mouse coordinates
 			end
 		end
+		lg.translate(-self.transx, -self.transy);
 		lg.setCanvas();
 
 		lg.draw(self.canvas, self.x, self.y+self.bar_height);
@@ -154,9 +159,10 @@ function Window:update(dt)
 	end
 
 	if self.minim then return end;
+	local tmx, tmy = self:to_window_cs(love.mouse.getX(), love.mouse.getY());
 	for i, v in ipairs(self.elements) do
 		if v.update then
-			v:update(dt, love.mouse.getX() - self.x, love.mouse.getY() - self.y - self.bar_height);
+			v:update(dt, tmx, tmy);
 		end
 	end
 end
@@ -167,9 +173,10 @@ function Window:mousemoved(x, y, dx, dy)
 			self:resize(x + self.dox, y + self.doy);
 		else
 			if self.minim then return end;
+			local tmx, tmy = self:to_window_cs(x, y);
 			for i, v in ipairs(self.elements) do
 				if v.mousemoved then
-					v:mousemoved(x-self.x, y-self.y, dx, dy)
+					v:mousemoved(tmx, tmy, dx, dy)
 				end
 			end
 		end
@@ -210,9 +217,10 @@ function Window:mousepressed(x, y, b)
 			end
 		end
 
+		local tmx, tmy = self:to_window_cs(x, y);
 		for i, v in ipairs(self.elements) do
 			if v.mousepressed then
-				v:mousepressed(x-self.x, y-self.y-self.bar_height, b);
+				v:mousepressed(tmx, tmy, b);
 			end
 		end
 	end
@@ -230,9 +238,10 @@ function Window:mousereleased(x, y, b)
 
 	if self.minim then return end;
 	if self.focused then
+		local tmx, tmy = self:to_window_cs(x, y);
 		for i, v in ipairs(self.elements) do
 			if v.mousereleased then
-				v:mousereleased(x-self.x, y-self.y-self.bar_height, b);
+				v:mousereleased(tmx, tmy, b);
 			end
 		end
 	end
@@ -264,8 +273,15 @@ function Window:textinput(t)
 	end
 end
 
+
 function Window:relative_mouse_pos()
-	return love.mouse.getX() - self.x, love.mouse.getY() - self.y - self.bar_height
+	-- TODO: add transx here??¿?¿??
+	return self:to_window_cs(love.mouse.getX(), love.mouse.getY());
+end
+
+-- Turns the given vector to relative window coordinates
+function Window:to_window_cs(x, y)
+	return x - self.x - self.transx, y - self.y - self.bar_height + self.transy
 end
 
 function Window:is_mouse_over()

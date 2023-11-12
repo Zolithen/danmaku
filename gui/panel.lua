@@ -142,6 +142,15 @@ function Panel:is_mouse_over()
 	return self.window:is_mouse_over() and math.point_in_box(mx, my, x, y, w, h);
 end
 
+-- To resize the window we also have to resize the canvas
+-- TODO: Resizing could be done ¿better? if instead of drawing the whole canvas we draw a quad
+function Panel:resize(new_w, new_h)
+	self.w = math.max(16, new_w);
+	self.h = math.max(16, new_h);
+	self.canvas:release();
+	self.canvas = love.graphics.newCanvas(self.w, self.h);
+end
+
 -- Panel boxes functions
 
 function Panel:box_main()

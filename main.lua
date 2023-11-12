@@ -4,6 +4,10 @@ gui = require "gui"
 ANDROID = gui.android
 
 function love.load(args)
+	-- how would i make scrollable sections bigger than whatever the fuck the system limit is? skill issue solved easily
+	--[[for i, v in pairs(lg.getSystemLimits()) do
+		print(i, v);
+	end]]
 	love.keyboard.setKeyRepeat(true);
 	lg.setLineStyle("rough");
 	lg.setLineWidth(1);
@@ -22,7 +26,7 @@ function love.load(args)
 		love.window.setFullscreen(true);
 	end
 
-	local gui_instance = loadstring(get_file("instance/item_editor.lua"))
+	local gui_instance = loadstring(get_file("instance/music_player.lua"))
 	gui_instance(winc);
 end
 
