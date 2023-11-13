@@ -1,4 +1,4 @@
-local Skin = {
+gui.Skin = {
 	back = {0.2, 0.2, 0.2, 1},
 	back3 = {0.3, 0.3, 0.3, 1},
 	back_light = {0.4, 0.4, 0.4, 1},
@@ -12,5 +12,3 @@ local Skin = {
 	window_border_width = 2,
 	font = love.graphics.newFont("assets/ttf/unifont.otf", 16); -- TODO: Make it so we cache fonts of new sizes from one default font
 }
-
-return Skin;

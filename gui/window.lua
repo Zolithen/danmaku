@@ -1,10 +1,10 @@
-local Window = {}
+gui.Window = {}
 -- movable
 -- expandable
 -- minimizable
 
 -- TODO: Conditions are getting worse over time by the amount
-function Window.new(x, y, w, h, skin, id, title, controller)
+function gui.Window.new(x, y, w, h, skin, id, title, controller)
 	local self = {
 		x = x,
 		y = y,
@@ -19,6 +19,7 @@ function Window.new(x, y, w, h, skin, id, title, controller)
 		focused = false, -- TODO: Make it so we can focus windows without them bugging out
 		show = true,
 		minim = false, -- Is the window minimized? (minim bcs I can't write minimized)
+		panel = gui.ProtoPanel.new(x, y, w, h);
 
 		canvas = love.graphics.newCanvas(w, h), -- Canvas to draw the elements to
 
@@ -44,21 +45,22 @@ function Window.new(x, y, w, h, skin, id, title, controller)
 	};
 
 	setmetatable(self, {
-		__index = Window
+		__index = gui.Window
 	});
 
 	return self;
 end
 
-function Window:add_element(el, id)
-	el:load(self.skin, id or nil, self);
+function gui.Window:add_element(el, id)
 	table.insert(self.elements, el);
+	el.id = id or math.uuid();
+	el.parent = self;
 	return el;
 end
 
 -- To resize the window we also have to resize the canvas
 -- TODO: Resizing could be done ¿better? if instead of drawing the whole canvas we draw a quad
-function Window:resize(new_w, new_h)
+function gui.Window:resize(new_w, new_h)
 	self.w = math.max(self.expand_box_size, new_w);
 	self.h = math.max(self.expand_box_size, new_h);
 	self.canvas:release();
@@ -72,16 +74,16 @@ end
 -- w_ = w + border_width*2
 -- h_ = h + 16 + border_width*2
 -- Canvas switches are expensive! Try switching canvases as least as possible
-function Window:draw()
+function gui.Window:draw()
 
 	local mx, my = love.mouse.getX(), love.mouse.getY();
 	-- Draw the window border
 	if self.focused then
-		lg.setColor(self.skin.green);
+		lg.setColor(gui.Skin.green);
 	else
-		lg.setColor(self.skin.red);
+		lg.setColor(gui.Skin.red);
 	end
-	local bw = self.skin.window_border_width;
+	local bw = gui.Skin.window_border_width;
 	if self.minim then
 		lg.rectangle("fill", self.x-bw, self.y-bw, self.w+bw*2, self.bar_height+bw*2);
 	else
@@ -89,11 +91,11 @@ function Window:draw()
 	end
 
 	-- Draw the bar
-	-- TODO: I don't want to put every box
+	-- TODO: I don't want to put every box (what the fuck did he mean by this)
 	if (math.point_in_box(mx, my, self:box_bar()) and not math.point_in_box(mx, my, self:box_minimize())) then
-		lg.setColor(self.skin.bar_light);
+		lg.setColor(gui.Skin.bar_light);
 	else
-		lg.setColor(self.skin.bar);
+		lg.setColor(gui.Skin.bar);
 	end
 	lg.rectangle("fill", self:box_bar());
 
@@ -103,19 +105,19 @@ function Window:draw()
 
 	--[[
 	if (self.window.focused and self.focused) then
-		lg.setColor(self.skin.back_highlight2);
+		lg.setColor(gui.Skin.back_highlight2);
 	elseif (self.window.focused and math.point_in_box(mx, my, self:box_full())) then
-		lg.setColor(self.skin.back_highlight);
+		lg.setColor(gui.Skin.back_highlight);
 	else
-		lg.setColor(self.skin.back_light);
+		lg.setColor(gui.Skin.back_light);
 	end
 	]]
 	-- Draw the minimize box
 	if self.minimizable then
 		if (self.focused and math.point_in_box(mx, my, self:box_minimize())) then
-			lg.setColor(self.skin.back_highlight);
+			lg.setColor(gui.Skin.back_highlight);
 		else
-			lg.setColor(self.skin.back_light);
+			lg.setColor(gui.Skin.back_light);
 		end
 		lg.rectangle("fill", self:box_minimize());
 	end
@@ -123,7 +125,7 @@ function Window:draw()
 
 	if not self.minim then
 		-- Draw the main window
-		lg.setColor(self.skin.back);
+		lg.setColor(gui.Skin.back);
 		lg.rectangle("fill", self:box_main());
 
 		-- Draw the elements
@@ -147,16 +149,16 @@ function Window:draw()
 		if self.expandable then
 			-- The box has to be highlitable even if we are not focusing the window
 			if math.point_in_box(mx, my, self:box_expand()) then
-				lg.setColor(self.skin.back_highlight)
+				lg.setColor(gui.Skin.back_highlight)
 			else
-				lg.setColor(self.skin.back_light)
+				lg.setColor(gui.Skin.back_light)
 			end
 			lg.rectangle("fill", self:box_expand());
 		end
 	end
 end
 
-function Window:update(dt)
+function gui.Window:update(dt)
 	if self.focused then -- If the windows is focused then we can move it
 		if self.dragging and self.movable then
 			self.x = love.mouse.getX() - self.dox;
@@ -176,7 +178,7 @@ function Window:update(dt)
 	end
 end
 
-function Window:mousemoved(x, y, dx, dy)
+function gui.Window:mousemoved(x, y, dx, dy)
 	if self.focused then
 		if self.expanding then
 			self:resize(x + self.dox, y + self.doy);
@@ -192,7 +194,7 @@ function Window:mousemoved(x, y, dx, dy)
 	end
 end
 
-function Window:mousepressed(x, y, b)
+function gui.Window:mousepressed(x, y, b)
 	if not math.point_in_box(x, y, self:box_full()) then
 		return;
 	end
@@ -239,7 +241,7 @@ function Window:mousepressed(x, y, b)
 	end
 end
 
-function Window:mousereleased(x, y, b)
+function gui.Window:mousereleased(x, y, b)
 	
 	self.dragging = false;
 	self.expanding = false;
@@ -256,7 +258,7 @@ function Window:mousereleased(x, y, b)
 	end
 end
 
-function Window:keypressed(key, scancode, is_repeat)
+function gui.Window:keypressed(key, scancode, is_repeat)
 	if self.minim then return end;
 	if self.focused then
 		for i, v in ipairs(self.elements) do
@@ -269,7 +271,7 @@ function Window:keypressed(key, scancode, is_repeat)
 	end
 end
 
-function Window:textinput(t)
+function gui.Window:textinput(t)
 	if self.minim then return end;
 	if self.focused then
 		for i, v in ipairs(self.elements) do
@@ -283,52 +285,50 @@ function Window:textinput(t)
 end
 
 
-function Window:relative_mouse_pos()
+function gui.Window:relative_mouse_pos()
 	-- TODO: add transx here??¿?¿??
 	return self:to_window_cs(love.mouse.getX(), love.mouse.getY());
 end
 
 -- Turns the given vector to relative window coordinates
-function Window:to_window_cs(x, y)
+function gui.Window:to_window_cs(x, y)
 	return x - self.x - self.transx, y - self.y - self.bar_height + self.transy
 end
 
-function Window:is_mouse_over()
+function gui.Window:is_mouse_over()
 	return math.point_in_box(love.mouse.getX(), love.mouse.getY(), self:box_full());
 end
 
 -- Window boxes functions
-function Window:box_bar()
+function gui.Window:box_bar()
 	return self.x, self.y, self.w, self.bar_height
 end
 
-function Window:box_main()
+function gui.Window:box_main()
 	return self.x, self.y+self.bar_height, self.w, self.h
 end
 
-function Window:box_full()
+function gui.Window:box_full()
 	return self.x, self.y, self.w, self.h+self.bar_height
 end
 
-function Window:box_expand() -- Size of the slip
+function gui.Window:box_expand() -- Size of the slip
 	return self.x + self.w - self.expand_box_size, 
 		   self.y + self.bar_height + self.h - self.expand_box_size,
 		   self.expand_box_size,
 		   self.expand_box_size
 end
 
-function Window:box_close()
+function gui.Window:box_close()
 	return self.x + self.w - self.bar_height-2,
 		   self.y,
 		   self.bar_height,
 		   self.bar_height
 end
 
-function Window:box_minimize()
+function gui.Window:box_minimize()
 	return self.x + self.w - 2*self.bar_height-4,
 		   self.y,
 		   self.bar_height,
 		   self.bar_height
 end
-
-return Window;

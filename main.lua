@@ -1,6 +1,6 @@
 lg = love.graphics;
 utf8 = require "utf8"
-gui = require "gui"
+require "gui"
 ANDROID = gui.android
 
 function love.load(args)

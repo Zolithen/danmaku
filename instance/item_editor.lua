@@ -48,7 +48,7 @@ windows.main = gui:new_window(0, 0, 300, 300, "main", "Main");
 windows.enchantments = gui:new_window(0, 0, 600, 420, "enchantments", "Enchantments");
 windows.enchantments.expandable = false;
 
---[[local temp = windows.main:add_element(gui.TextButton.new(
+--[[local temp = windows.main:add_element(gui.Button.new(
 	0, 16, "test", 0, 0
 ));
 temp:connect("press", function(t)
@@ -85,7 +85,7 @@ local panel_test = windows.main:add_element(gui.Panel.new(
 	0, 80, 300, 300
 )); 
 
-local but = panel_test:add_element(gui.TextButton.new(
+local but = panel_test:add_element(gui.Button.new(
 	0, 0, "test"
 ));
 
@@ -93,7 +93,7 @@ but:connect("press", function(t)
 	print("testsssss");
 end)
 
-local hide_test = windows.main:add_element(gui.TextButton.new(
+local hide_test = windows.main:add_element(gui.Button.new(
 	0, 64, "Switch"
 ))
 

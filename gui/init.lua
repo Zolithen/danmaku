@@ -1,4 +1,4 @@
-local gui = {
+gui = {
 	path = ...,
 	windows = {},
 	android = love.system.getOS() == "Android";
@@ -7,22 +7,23 @@ require(gui.path .. ".util")
 
 gui.Events = require(gui.path .. ".element_events" )
 
-local ll = function(name, file)
-	gui[name] = require(gui.path .. "." .. file);
-	set_union(gui[name], gui.Events);
+ll = function(path)
+	require(gui.path .. "." .. path);
 end
 
-ll("Window", "window")
-ll("Skin", "skin")
+ll("skin");
+ll("proto_panel");
 
-ll("Panel", "panel");
+ll("window");
 
-ll("Label", "text_label")
-ll("TextInput", "text_input")
-ll("ClickableArea", "clickable");
-ll("Slider", "slider")
+ll("panel");
 
-ll("TextButton", "text_button");
+ll("text_label");
+ll("text_input");
+ll("clickable");
+ll("slider");
+
+ll("text_button");
 
 -- Window controller stuff
 function gui:new_window(x, y, w, h, id, name)
@@ -98,5 +99,3 @@ function gui:keypressed(k, scancode, is_repeat)
 		end
 	end
 end
-
-return gui;

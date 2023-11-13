@@ -1,6 +1,8 @@
-local Slider = {}
+gui.Slider = {}
 
-function Slider.new(x, y, w, h)
+set_union(gui.Slider, gui.Events);
+
+function gui.Slider.new(x, y, w, h)
 	local self = {
 		x = x,
 		y = y,
@@ -21,20 +23,14 @@ function Slider.new(x, y, w, h)
 	};
 
 	setmetatable(self, {
-		__index = Slider
+		__index = gui.Slider
 	})
 	self:setup_events();
 
 	return self;
 end
 
-function Slider:load(skin, id, window)
-	self.skin = skin;
-	self.id = id or math.uuid();
-	self.window = window;
-end
-
-function Slider:update(dt, mx, my)
+function gui.Slider:update(dt, mx, my)
 	if self.focused then
 		--[[self.boxx = math.clamp((mx - self.x) - self.dox, 0, self.w-self.boxw);
 		self.boxy = math.clamp((my - self.y) - self.doy, 0, self.h-self.boxh);]]
@@ -48,21 +44,21 @@ function Slider:update(dt, mx, my)
 	end
 end
 
-function Slider:draw(mx, my)
-	lg.setColor(self.skin.back3);
+function gui.Slider:draw(mx, my)
+	lg.setColor(gui.Skin.back3);
 	lg.rectangle("fill", self.x, self.y, self.w, self.h);
 	if self.focused then
-		lg.setColor(self.skin.back_highlight2);
-	elseif (self.window:is_mouse_over() and self.window.focused and math.point_in_box(mx, my, self:box_slider())) then
-		lg.setColor(self.skin.back_highlight);
+		lg.setColor(gui.Skin.back_highlight2);
+	elseif (self.parent:is_mouse_over() and self.parent.focused and math.point_in_box(mx, my, self:box_slider())) then
+		lg.setColor(gui.Skin.back_highlight);
 	else
-		lg.setColor(self.skin.back_light);
+		lg.setColor(gui.Skin.back_light);
 	end
 	lg.rectangle("fill", self.x+self.boxx, self.y+self.boxy, self.boxw, self.boxh);
 end
 
-function Slider:mousepressed(x, y, b)
-	if (b == 1 and self.window.focused and math.point_in_box(x, y, self:box_slider())) then
+function gui.Slider:mousepressed(x, y, b)
+	if (b == 1 and self.parent.focused and math.point_in_box(x, y, self:box_slider())) then
 		self.focused = true;
 		--[[self.dox = (x - self.x) - self.boxx;
 		self.doy = (y - self.y) - self.boxy;]]
@@ -74,19 +70,17 @@ function Slider:mousepressed(x, y, b)
 	end
 end
 
-function Slider:mousereleased(x, y, b)
+function gui.Slider:mousereleased(x, y, b)
 	--[[if self.focused then
 		self:call("press");
 	end]]
 	self.focused = false;
 end
 
-function Slider:box_full()
+function gui.Slider:box_full()
 	return self.x, self.y, self.w, self.h
 end
 
-function Slider:box_slider()
+function gui.Slider:box_slider()
 	return self.x + self.boxx, self.y + self.boxy, self.boxw, self.boxh
 end
-
-return Slider;

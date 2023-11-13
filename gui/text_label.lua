@@ -1,27 +1,21 @@
-local Label = {}
+gui.Label = {}
 
-function Label.new(x, y, text)
+function gui.Label.new(x, y, text)
 	local self = {
 		x = x,
 		y = y,
 		text = text
 	}
+	self.texture = love.graphics.newText(gui.Skin.font, self.text);
 
 	setmetatable(self, {
-		__index = Label
+		__index = gui.Label
 	})
 
 	return self
 end
 
-function Label:load(skin, id, window)
-	self.texture = love.graphics.newText(skin.font, self.text);
-	self.skin = skin;
-	self.id = id or math.uuid();
-	self.window = window; 
-end
-
-function Label:draw()
+function gui.Label:draw()
 	lg.setColor(1, 1, 1, 1);
 	lg.draw(self.texture, self.x, self.y);
 end
@@ -30,14 +24,12 @@ end
 	API FUNCTIONS
 ]]
 
-function Label:get_width()
+function gui.Label:get_width()
 	return self.texture:getWidth();
 end
 
-function Label:set_text(t)
+function gui.Label:set_text(t)
 	self.text = t;
 	self.texture:release();
 	self.texture = love.graphics.newText(skin.font, self.text);
 end
-
-return Label;

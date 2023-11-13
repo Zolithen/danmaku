@@ -1,9 +1,11 @@
 -- TODO: Should we use an ECS to handle this kinda stuff or wut
 -- i literally have no idea what i'm doing
 
-local Clickable = {}
+gui.ClickableArea = {}
 
-function Clickable.new(x, y, w, h)
+set_union(gui.ClickableArea, gui.Events);
+
+function gui.ClickableArea.new(x, y, w, h)
 	local self = {
 		x = x,
 		y = y,
@@ -13,20 +15,14 @@ function Clickable.new(x, y, w, h)
 	};
 
 	setmetatable(self, {
-		__index = Clickable
+		__index = gui.ClickableArea
 	})
 	self:setup_events();
 
 	return self;
 end
 
-function Clickable:load(skin, id, window)
-	self.skin = skin;
-	self.id = id or math.uuid();
-	self.window = window;
-end
-
-function Clickable:update(dt, mx, my)
+function gui.ClickableArea:update(dt, mx, my)
 	if self.focused then
 		if not math.point_in_box(mx, my, self:box_full()) then
 			self.focused = false;
@@ -34,33 +30,31 @@ function Clickable:update(dt, mx, my)
 	end
 end
 
-function Clickable:draw(mx, my)
-	if (self.window:is_mouse_over() and (self.window.focused and self.focused)) then
-		lg.setColor(self.skin.back_highlight2);
-	elseif self.window:is_mouse_over() and (self.window.focused and math.point_in_box(mx, my, self:box_full())) then
-		lg.setColor(self.skin.back_highlight);
+function gui.ClickableArea:draw(mx, my)
+	if (self.parent:is_mouse_over() and (self.parent.focused and self.focused)) then
+		lg.setColor(gui.Skin.back_highlight2);
+	elseif self.parent:is_mouse_over() and (self.parent.focused and math.point_in_box(mx, my, self:box_full())) then
+		lg.setColor(gui.Skin.back_highlight);
 	else
-		lg.setColor(self.skin.back_light);
+		lg.setColor(gui.Skin.back_light);
 	end
 	lg.rectangle("fill", self.x, self.y, self.w, self.h);
 	lg.setColor(1, 1, 1, 1);
 end
 
-function Clickable:mousepressed(x, y, b)
-	if (b == 1 and self.window.focused and math.point_in_box(x, y, self:box_full())) then
+function gui.ClickableArea:mousepressed(x, y, b)
+	if (b == 1 and self.parent.focused and math.point_in_box(x, y, self:box_full())) then
 		self.focused = true;
 	end
 end
 
-function Clickable:mousereleased(x, y, b)
+function gui.ClickableArea:mousereleased(x, y, b)
 	if self.focused then
 		self:call("press");
 	end
 	self.focused = false;
 end
 
-function Clickable:box_full()
+function gui.ClickableArea:box_full()
 	return self.x, self.y, self.w, self.h
 end
-
-return Clickable;
