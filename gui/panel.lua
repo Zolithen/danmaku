@@ -7,6 +7,8 @@ function Panel.new(x, y, w, h)
 		y = y,
 		w = w,
 		h = h,
+		transx = 0,
+		transy = 0,
 		id = id or math.uuid(),
 		elements = {},
 		skin = skin,
@@ -48,6 +50,7 @@ function Panel:draw(mx, my)
 	end
 
 	if not self.minim then
+		local tmx, tmy = self:to_local_cs(mx, my);
 		-- Draw the main Panel
 		lg.setColor(self.skin.back);
 		lg.rectangle("fill", self:box_main());
@@ -57,11 +60,13 @@ function Panel:draw(mx, my)
 		lg.push("all");
 			lg.setCanvas(self.canvas); -- TODO: Make it so we only draw to the canvas whenever we need updating the visual aspect
 			lg.clear();
+			lg.translate(self.transx, self.transy);
 			for i, v in ipairs(self.elements) do
 				if v.draw then
-					v:draw(mx - self.x, my - self.y); -- We pass in the transformed mouse coordinates
+					v:draw(tmx, tmy); -- We pass in the transformed mouse coordinates
 				end
 			end
+			lg.translate(-self.transx, -self.transy);
 		lg.pop();
 
 		lg.draw(self.canvas, self.x, self.y);
@@ -71,18 +76,20 @@ end
 function Panel:update(dt, mx, my)
 	self.focused = self.window.focused;
 	if self.minim then return end;
+	local tmx, tmy = self:to_local_cs(mx, my);
 	for i, v in ipairs(self.elements) do
 		if v.update then
-			v:update(dt, mx - self.x, my - self.y);
+			v:update(dt, tmx, tmy);
 		end
 	end
 end
 
 function Panel:mousemoved(x, y, dx, dy)
 	if self.minim then return end;
+	local tmx, tmy = self:to_local_cs(x, y);
 	for i, v in ipairs(self.elements) do
 		if v.mousemoved then
-			v:mousemoved(x-self.x, y-self.y, dx, dy)
+			v:mousemoved(tmx, tmy, dx, dy)
 		end
 	end
 end
@@ -95,9 +102,10 @@ function Panel:mousepressed(x, y, b)
 	-- TODO: Make this work with all buttons pleaseeeee
 	if b == 1 then
 		if self.minim then return false end;
+		local tmx, tmy = self:to_local_cs(x, y);
 		for i, v in ipairs(self.elements) do
 			if v.mousepressed then
-				v:mousepressed(x-self.x, y-self.y, b);
+				v:mousepressed(tmx, tmy, b);
 			end
 		end
 	end
@@ -105,9 +113,10 @@ end
 
 function Panel:mousereleased(x, y, b)
 	if self.minim then return end;
+	local tmx, tmy = self:to_local_cs(x, y);
 	for i, v in ipairs(self.elements) do
 		if v.mousereleased then
-			v:mousereleased(x-self.x, y-self.y, b);
+			v:mousereleased(tmx, tmy, b);
 		end
 	end
 end
@@ -149,6 +158,10 @@ function Panel:resize(new_w, new_h)
 	self.h = math.max(16, new_h);
 	self.canvas:release();
 	self.canvas = love.graphics.newCanvas(self.w, self.h);
+end
+
+function Panel:to_local_cs(x, y)
+	return x - self.x - self.transx, y - self.y - self.transy
 end
 
 -- Panel boxes functions
