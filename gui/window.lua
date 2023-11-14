@@ -5,6 +5,7 @@ gui.Window = {}
 
 -- TODO: Conditions are getting worse over time by the amount
 function gui.Window.new(x, y, w, h, skin, id, title, controller)
+	
 	local self = {
 		x = x,
 		y = y,
@@ -12,16 +13,12 @@ function gui.Window.new(x, y, w, h, skin, id, title, controller)
 		h = h,
 		id = id or math.uuid(),
 		title = title or "",
-		elements = {},
 		skin = skin,
 		controller = controller, -- Window controller to which this window is attached to
 		child_index = 0, -- Index of the window in the parent controller. Is set in the gui:new_window function
 		focused = false, -- TODO: Make it so we can focus windows without them bugging out
 		show = true,
 		minim = false, -- Is the window minimized? (minim bcs I can't write minimized)
-		panel = gui.ProtoPanel.new(x, y, w, h);
-
-		canvas = love.graphics.newCanvas(w, h), -- Canvas to draw the elements to
 
 		minimizable = true,
 		movable = true,
@@ -44,6 +41,15 @@ function gui.Window.new(x, y, w, h, skin, id, title, controller)
 		maxh = 0
 	};
 
+	self.panel = gui.ProtoPanel.new(x, y+self.bar_height, w, h-self.bar_height);
+	self.panel.parent = self;
+	self.elements = self.panel.elements;
+	self.canvas = self.panel.canvas; -- userdata is not copied, but passed by reference
+	--set_union_ignore_dupes(self, gui.ProtoPanel.new(x, y+self.bar_height, w, h-self.bar_height));
+
+	--[[self.panel = gui.ProtoPanel.new(x, y+self.bar_height, w, h-self.bar_height);
+	self.panel.elements = self.elements; ]]
+
 	setmetatable(self, {
 		__index = gui.Window
 	});
@@ -52,19 +58,26 @@ function gui.Window.new(x, y, w, h, skin, id, title, controller)
 end
 
 function gui.Window:add_element(el, id)
-	table.insert(self.elements, el);
+	--[[table.insert(self.elements, el);
 	el.id = id or math.uuid();
 	el.parent = self;
-	return el;
+	return el;]]
+	return self.panel:add_element(el, id);
 end
 
 -- To resize the window we also have to resize the canvas
 -- TODO: Resizing could be done ¿better? if instead of drawing the whole canvas we draw a quad
 function gui.Window:resize(new_w, new_h)
-	self.w = math.max(self.expand_box_size, new_w);
+	--[[self.w = math.max(self.expand_box_size, new_w);
 	self.h = math.max(self.expand_box_size, new_h);
 	self.canvas:release();
-	self.canvas = love.graphics.newCanvas(self.w, self.h);
+	self.canvas = love.graphics.newCanvas(self.w, self.h);]]
+	self.w = math.max(self.expand_box_size, new_w);
+	self.h = math.max(self.expand_box_size, new_h);
+	self.panel:resize(new_w, new_h);
+
+	-- We have released the original reference, we need to get the new one back
+	self.canvas = self.panel.canvas;
 end
 
 -- Border calculations
@@ -129,7 +142,7 @@ function gui.Window:draw()
 		lg.rectangle("fill", self:box_main());
 
 		-- Draw the elements
-		lg.setColor(1, 1, 1, 1);
+		--[[lg.setColor(1, 1, 1, 1);
 		lg.setCanvas(self.canvas); -- TODO: Make it so we only draw to the canvas whenever we need updating the visual aspect
 		lg.clear();
 		lg.translate(self.transx, self.transy);
@@ -143,7 +156,8 @@ function gui.Window:draw()
 		lg.setCanvas();
 
 		lg.setColor(1, 1, 1, 1);
-		lg.draw(self.canvas, self.x, self.y+self.bar_height);
+		lg.draw(self.canvas, self.x, self.y+self.bar_height);]]
+		self.panel:draw(mx, my);
 
 		-- Draw the expand box
 		if self.expandable then
@@ -159,6 +173,7 @@ function gui.Window:draw()
 end
 
 function gui.Window:update(dt)
+
 	if self.focused then -- If the windows is focused then we can move it
 		if self.dragging and self.movable then
 			self.x = love.mouse.getX() - self.dox;
@@ -169,13 +184,22 @@ function gui.Window:update(dt)
 		end
 	end
 
+	-- Proxy the proto panel
+	self.panel.x = self.x;
+	self.panel.y = self.y + self.bar_height;
+	self.panel.transx = self.transx;
+	self.panel.transy = self.transy 
+	--self.panel.w = self.w;
+	--self.panel.h = self.h;
+
 	if self.minim then return end;
-	local tmx, tmy = self:to_window_cs(love.mouse.getX(), love.mouse.getY());
+	--[[local tmx, tmy = self:to_window_cs(love.mouse.getX(), love.mouse.getY());
 	for i, v in ipairs(self.elements) do
 		if v.update then
 			v:update(dt, tmx, tmy);
 		end
-	end
+	end]]
+	self.panel:update(dt, love.mouse.getX(), love.mouse.getY());
 end
 
 function gui.Window:mousemoved(x, y, dx, dy)
@@ -184,12 +208,13 @@ function gui.Window:mousemoved(x, y, dx, dy)
 			self:resize(x + self.dox, y + self.doy);
 		else
 			if self.minim then return end;
-			local tmx, tmy = self:to_window_cs(x, y);
+			--[[local tmx, tmy = self:to_window_cs(x, y);
 			for i, v in ipairs(self.elements) do
 				if v.mousemoved then
 					v:mousemoved(tmx, tmy, dx, dy)
 				end
-			end
+			end]]
+			self.panel:mousemoved(x, y, dx, dy);
 		end
 	end
 end
@@ -228,12 +253,13 @@ function gui.Window:mousepressed(x, y, b)
 			end
 		end
 
-		local tmx, tmy = self:to_window_cs(x, y);
+		self.panel:mousepressed(x, y, b);
+		--[[local tmx, tmy = self:to_window_cs(x, y);
 		for i, v in ipairs(self.elements) do
 			if v.mousepressed then
 				v:mousepressed(tmx, tmy, b);
 			end
-		end
+		end]]
 	end
 
 	if self.focused then
@@ -249,23 +275,25 @@ function gui.Window:mousereleased(x, y, b)
 
 	if self.minim then return end;
 	if self.focused then
-		local tmx, tmy = self:to_window_cs(x, y);
+		--[[local tmx, tmy = self:to_window_cs(x, y);
 		for i, v in ipairs(self.elements) do
 			if v.mousereleased then
 				v:mousereleased(tmx, tmy, b);
 			end
-		end
+		end]]
+		self.panel:mousereleased(x, y, b);
 	end
 end
 
 function gui.Window:keypressed(key, scancode, is_repeat)
 	if self.minim then return end;
 	if self.focused then
-		for i, v in ipairs(self.elements) do
+		--[[for i, v in ipairs(self.elements) do
 			if v.keypressed then
 				v:keypressed(key, scancode, is_repeat);
 			end
-		end
+		end]]
+		self.panel:keypressed(key, scancode, is_repeat)
 
 		return true;
 	end
@@ -274,11 +302,12 @@ end
 function gui.Window:textinput(t)
 	if self.minim then return end;
 	if self.focused then
-		for i, v in ipairs(self.elements) do
+		--[[for i, v in ipairs(self.elements) do
 			if v.textinput then
 				v:textinput(t);
 			end
-		end
+		end]]
+		self.panel:textinput(t);
 
 		return true;
 	end

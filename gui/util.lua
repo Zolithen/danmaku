@@ -52,3 +52,11 @@ function set_union(a, b)
 		end
 	end
 end
+
+function set_union_ignore_dupes(a, b)
+	for i, v in pairs(b) do
+		if not a[i] then
+			a[i] = v;
+		end
+	end
+end
