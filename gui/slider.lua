@@ -44,6 +44,7 @@ function gui.Slider:update(dt, mx, my)
 	end
 end
 
+-- TODO: Fix weird highlighting
 function gui.Slider:draw(mx, my)
 	lg.setColor(gui.Skin.back3);
 	lg.rectangle("fill", self.x, self.y, self.w, self.h);

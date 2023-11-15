@@ -36,6 +36,10 @@ function gui.Panel:add_element(el, id)
 	return self.panel:add_element(el, id);
 end
 
+function gui.Panel:remove_element(id)
+	return self.panel:remove_element(id);
+end
+
 function gui.Panel:draw(mx, my)
 	-- Draw the Panel border
 	lg.setColor(gui.Skin.green);

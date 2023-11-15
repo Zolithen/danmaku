@@ -26,7 +26,7 @@ function love.load(args)
 		love.window.setFullscreen(true);
 	end
 
-	local gui_instance = loadstring(get_file("instance/item_editor.lua"))
+	local gui_instance = loadstring(get_file("instance/music_player.lua"))
 	gui_instance(winc);
 end
 

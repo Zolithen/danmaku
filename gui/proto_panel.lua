@@ -13,6 +13,7 @@ function gui.ProtoPanel.new(x, y, w, h)
 		elements = {},
 		show = true,
 		focused = false, -- Hack to allow elements to know when the parent parent is focused
+		id_counter = 0, -- For incremental element IDs
 
 		canvas = love.graphics.newCanvas(w, h) -- Canvas to draw the elements to
 	};
@@ -26,9 +27,19 @@ end
 
 function gui.ProtoPanel:add_element(el, id)
 	table.insert(self.elements, el);
-	el.id = id or math.uuid();
+	el.id = self.id_counter;
+	self.id_counter = self.id_counter + 1;
 	el.parent = self; -- TODO: Do we have to change this?¿
 	return el;
+end
+
+function gui.ProtoPanel:remove_element(id)
+	for i, v in r_ipairs(self.elements) do
+		if v.id == id then
+			table.remove(self.elements, i);
+			break;
+		end
+	end
 end
 
 function gui.ProtoPanel:draw(mx, my)

@@ -1,3 +1,6 @@
+if ANDROID then
+	love.audio.setMixWithSystem(true);
+end
 main = gui:new_window(0, 0, lg.getWidth(), lg.getHeight(), "main", "Main");
 main.movable = false;
 main.minimizable = false;
@@ -18,18 +21,37 @@ function laywide_add(t)
 	local a = panel:add_element(gui.ClickableArea.new(
 		0, layout_amount*50, lg.getWidth()-16, 50
 	))
-	panel:add_element(gui.Label.new(
+	local b = panel:add_element(gui.Label.new(
 		0, layout_amount*50, t	
 	))
 	layout_amount = layout_amount + 1;
 
-	table.insert(layout_wide, a);
+	table.insert(layout_wide, {a, b});
 	return a;
 end
 
-laywide_add("Slowdive - Falling Ashes")
+function laywide_remove(i)
+	local v = layout_wide[i];
+	table.remove(layout_wide, i);
+	layout_amount = layout_amount - 1;
+	panel:remove_element(v[1].id);
+	panel:remove_element(v[2].id);
+end
+
+function laywide_empty()
+	for i, v in r_ipairs(layout_wide) do
+		laywide_remove(i);
+	end
+end
+
+local songs = love.filesystem.getDirectoryItems("songs")
+for i, v in ipairs(songs) do
+	laywide_add(v);
+end
+
+--[[laywide_add("Slowdive - Falling Ashes")
 laywide_add("Holy Fawn - Dimensional Bleed")
-laywide_add("death insurance - ohmyg0d")
+laywide_add("death insurance - ohmyg0d")]]
 
 local bar = main:add_element(gui.Slider.new(
 	lg.getWidth()-16,
@@ -40,6 +62,9 @@ local bar = main:add_element(gui.Slider.new(
 
 function other_update()
 	panel.transy = -bar.boxy;
+	if love.keyboard.isDown("p") then
+		laywide_empty();
+	end
 	--main.transy = main.transy - 1;
 end
 

@@ -61,6 +61,10 @@ function gui.Window:add_element(el, id)
 	return self.panel:add_element(el, id);
 end
 
+function gui.Window:remove_element(id)
+	return self.panel:remove_element(id);
+end
+
 -- To resize the window we also have to resize the canvas
 -- TODO: Resizing could be done ¿better? if instead of drawing the whole canvas we draw a quad
 function gui.Window:resize(new_w, new_h)
