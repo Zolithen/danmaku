@@ -12,7 +12,6 @@ function gui.ProtoPanel.new(x, y, w, h)
 		id = math.uuid(),
 		elements = {},
 		show = true,
-		minim = false, -- Is the Panel minimized? (minim bcs I can't write minimized)
 		focused = false, -- Hack to allow elements to know when the parent parent is focused
 
 		canvas = love.graphics.newCanvas(w, h) -- Canvas to draw the elements to
@@ -131,7 +130,7 @@ function gui.ProtoPanel:resize(new_w, new_h)
 end
 
 function gui.ProtoPanel:relative_mouse_pos()
-	-- TODO: add transx here??¿?¿??
+	-- TODO: make it not use love.mouse.get so we can have some kinda global stack of positions or something
 	return self:to_local_cs(love.mouse.getX(), love.mouse.getY());
 end
 

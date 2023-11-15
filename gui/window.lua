@@ -58,20 +58,12 @@ function gui.Window.new(x, y, w, h, skin, id, title, controller)
 end
 
 function gui.Window:add_element(el, id)
-	--[[table.insert(self.elements, el);
-	el.id = id or math.uuid();
-	el.parent = self;
-	return el;]]
 	return self.panel:add_element(el, id);
 end
 
 -- To resize the window we also have to resize the canvas
 -- TODO: Resizing could be done ¿better? if instead of drawing the whole canvas we draw a quad
 function gui.Window:resize(new_w, new_h)
-	--[[self.w = math.max(self.expand_box_size, new_w);
-	self.h = math.max(self.expand_box_size, new_h);
-	self.canvas:release();
-	self.canvas = love.graphics.newCanvas(self.w, self.h);]]
 	self.w = math.max(self.expand_box_size, new_w);
 	self.h = math.max(self.expand_box_size, new_h);
 	self.panel:resize(new_w, new_h);
@@ -142,21 +134,6 @@ function gui.Window:draw()
 		lg.rectangle("fill", self:box_main());
 
 		-- Draw the elements
-		--[[lg.setColor(1, 1, 1, 1);
-		lg.setCanvas(self.canvas); -- TODO: Make it so we only draw to the canvas whenever we need updating the visual aspect
-		lg.clear();
-		lg.translate(self.transx, self.transy);
-		local tmx, tmy = self:to_window_cs(mx, my);
-		for i, v in ipairs(self.elements) do
-			if v.draw then
-				v:draw(tmx, tmy); -- We pass in the transformed mouse coordinates
-			end
-		end
-		lg.translate(-self.transx, -self.transy);
-		lg.setCanvas();
-
-		lg.setColor(1, 1, 1, 1);
-		lg.draw(self.canvas, self.x, self.y+self.bar_height);]]
 		self.panel:draw(mx, my);
 
 		-- Draw the expand box
@@ -193,12 +170,6 @@ function gui.Window:update(dt)
 	--self.panel.h = self.h;
 
 	if self.minim then return end;
-	--[[local tmx, tmy = self:to_window_cs(love.mouse.getX(), love.mouse.getY());
-	for i, v in ipairs(self.elements) do
-		if v.update then
-			v:update(dt, tmx, tmy);
-		end
-	end]]
 	self.panel:update(dt, love.mouse.getX(), love.mouse.getY());
 end
 
@@ -208,12 +179,6 @@ function gui.Window:mousemoved(x, y, dx, dy)
 			self:resize(x + self.dox, y + self.doy);
 		else
 			if self.minim then return end;
-			--[[local tmx, tmy = self:to_window_cs(x, y);
-			for i, v in ipairs(self.elements) do
-				if v.mousemoved then
-					v:mousemoved(tmx, tmy, dx, dy)
-				end
-			end]]
 			self.panel:mousemoved(x, y, dx, dy);
 		end
 	end
@@ -254,12 +219,6 @@ function gui.Window:mousepressed(x, y, b)
 		end
 
 		self.panel:mousepressed(x, y, b);
-		--[[local tmx, tmy = self:to_window_cs(x, y);
-		for i, v in ipairs(self.elements) do
-			if v.mousepressed then
-				v:mousepressed(tmx, tmy, b);
-			end
-		end]]
 	end
 
 	if self.focused then
@@ -275,12 +234,6 @@ function gui.Window:mousereleased(x, y, b)
 
 	if self.minim then return end;
 	if self.focused then
-		--[[local tmx, tmy = self:to_window_cs(x, y);
-		for i, v in ipairs(self.elements) do
-			if v.mousereleased then
-				v:mousereleased(tmx, tmy, b);
-			end
-		end]]
 		self.panel:mousereleased(x, y, b);
 	end
 end
@@ -288,11 +241,6 @@ end
 function gui.Window:keypressed(key, scancode, is_repeat)
 	if self.minim then return end;
 	if self.focused then
-		--[[for i, v in ipairs(self.elements) do
-			if v.keypressed then
-				v:keypressed(key, scancode, is_repeat);
-			end
-		end]]
 		self.panel:keypressed(key, scancode, is_repeat)
 
 		return true;
@@ -302,11 +250,6 @@ end
 function gui.Window:textinput(t)
 	if self.minim then return end;
 	if self.focused then
-		--[[for i, v in ipairs(self.elements) do
-			if v.textinput then
-				v:textinput(t);
-			end
-		end]]
 		self.panel:textinput(t);
 
 		return true;
@@ -316,11 +259,11 @@ end
 
 function gui.Window:relative_mouse_pos()
 	-- TODO: add transx here??¿?¿??
-	return self:to_window_cs(love.mouse.getX(), love.mouse.getY());
+	return self:to_local_cs(love.mouse.getX(), love.mouse.getY());
 end
 
 -- Turns the given vector to relative window coordinates
-function gui.Window:to_window_cs(x, y)
+function gui.Window:to_local_cs(x, y)
 	return x - self.x - self.transx, y - self.y - self.bar_height + self.transy
 end
 

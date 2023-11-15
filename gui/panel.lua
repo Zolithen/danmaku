@@ -7,10 +7,11 @@ function gui.Panel.new(x, y, w, h)
 		y = y,
 		w = w,
 		h = h,
+		
 		transx = 0,
 		transy = 0,
+		
 		id = id or math.uuid(),
-		elements = {},
 		skin = skin,
 		show = true,
 		minim = false, -- Is the Panel minimized? (minim bcs I can't write minimized)
@@ -18,6 +19,11 @@ function gui.Panel.new(x, y, w, h)
 
 		canvas = love.graphics.newCanvas(w, h) -- Canvas to draw the elements to
 	};
+
+	self.panel = gui.ProtoPanel.new(x, y, w, h);
+	self.panel.parent = self;
+	self.elements = self.panel.elements;
+	self.canvas = self.panel.canvas; -- userdata is not copied, but passed by reference
 
 	setmetatable(self, {
 		__index = gui.Panel
@@ -27,10 +33,7 @@ function gui.Panel.new(x, y, w, h)
 end
 
 function gui.Panel:add_element(el, id)
-	table.insert(self.elements, el);
-	el.id = id or math.uuid();
-	el.parent = self;
-	return el;
+	return self.panel:add_element(el, id);
 end
 
 function gui.Panel:draw(mx, my)
@@ -49,43 +52,35 @@ function gui.Panel:draw(mx, my)
 		lg.setColor(gui.Skin.back);
 		lg.rectangle("fill", self:box_main());
 
-		-- Draw the elements
-		lg.setColor(1, 1, 1, 1);
-		lg.push("all");
-			lg.setCanvas(self.canvas); -- TODO: Make it so we only draw to the canvas whenever we need updating the visual aspect
-			lg.clear();
-			lg.translate(self.transx, self.transy);
-			for i, v in ipairs(self.elements) do
-				if v.draw then
-					v:draw(tmx, tmy); -- We pass in the transformed mouse coordinates
-				end
-			end
-			lg.translate(-self.transx, -self.transy);
-		lg.pop();
-
-		lg.draw(self.canvas, self.x, self.y);
+		self.panel:draw(mx, my);
 	end
 end
 
 function gui.Panel:update(dt, mx, my)
 	self.focused = self.parent.focused;
+	self.panel.x = self.x;
+	self.panel.y = self.y;
+	self.panel.transx = self.transx;
+	self.panel.transy = self.transy 
 	if self.minim then return end;
-	local tmx, tmy = self:to_local_cs(mx, my);
+	--[[local tmx, tmy = self:to_local_cs(mx, my);
 	for i, v in ipairs(self.elements) do
 		if v.update then
 			v:update(dt, tmx, tmy);
 		end
-	end
+	end]]
+	self.panel:update(dt, mx, my);
 end
 
 function gui.Panel:mousemoved(x, y, dx, dy)
 	if self.minim then return end;
-	local tmx, tmy = self:to_local_cs(x, y);
+	--[[local tmx, tmy = self:to_local_cs(x, y);
 	for i, v in ipairs(self.elements) do
 		if v.mousemoved then
 			v:mousemoved(tmx, tmy, dx, dy)
 		end
-	end
+	end]]
+	self.panel:mousepressed(x, y, dx, dy);
 end
 
 function gui.Panel:mousepressed(x, y, b)
@@ -96,46 +91,56 @@ function gui.Panel:mousepressed(x, y, b)
 	-- TODO: Make this work with all buttons pleaseeeee
 	if b == 1 then
 		if self.minim then return false end;
-		local tmx, tmy = self:to_local_cs(x, y);
+		--[[local tmx, tmy = self:to_local_cs(x, y);
 		for i, v in ipairs(self.elements) do
 			if v.mousepressed then
 				v:mousepressed(tmx, tmy, b);
 			end
-		end
+		end]]
+		self.panel:mousepressed(x, y, b);
 	end
 end
 
 function gui.Panel:mousereleased(x, y, b)
 	if self.minim then return end;
 	local tmx, tmy = self:to_local_cs(x, y);
-	for i, v in ipairs(self.elements) do
+	--[[for i, v in ipairs(self.elements) do
 		if v.mousereleased then
 			v:mousereleased(tmx, tmy, b);
 		end
-	end
+	end]]
+	self.panel:mousereleased(x, y, b);
 end
 
 function gui.Panel:keypressed(key, scancode, is_repeat)
 	if self.minim then return end;
-	for i, v in ipairs(self.elements) do
+	--[[for i, v in ipairs(self.elements) do
 		if v.keypressed then
 			v:keypressed(key, scancode, is_repeat);
 		end
-	end
+	end]]
+	self.panel:keypressed(key, scancode, is_repeat);
 end
 
 function gui.Panel:textinput(t)
 	if self.minim then return end;
-	for i, v in ipairs(self.elements) do
+	--[[for i, v in ipairs(self.elements) do
 		if v.textinput then
 			v:textinput(t);
 		end
-	end
+	end]]
+	self.panel:textinput(t);
 end
 
 --[[function Panel:is_mouse_over()
 	return math.point_in_box(love.mouse.getX(), love.mouse.getY(), self:box_full());
 end]]
+
+-- TODO: Ensure this works with nested panels
+function gui.Panel:relative_mouse_pos()
+	-- TODO: add transx here??¿?¿??
+	return self:to_local_cs(love.mouse.getX(), love.mouse.getY());
+end
 
 function gui.Panel:is_mouse_over()
 	local mx, my = self.parent:relative_mouse_pos();
@@ -150,8 +155,10 @@ end
 function gui.Panel:resize(new_w, new_h)
 	self.w = math.max(16, new_w);
 	self.h = math.max(16, new_h);
-	self.canvas:release();
-	self.canvas = love.graphics.newCanvas(self.w, self.h);
+	--self.canvas:release();
+	--self.canvas = love.graphics.newCanvas(self.w, self.h);
+	self.panel:resize(new_w, new_h);
+	self.canvas = self.panel.canvas;
 end
 
 function gui.Panel:to_local_cs(x, y)
