@@ -43,6 +43,7 @@ function r_ipairs(t)
     return reversedipairsiter, t, #t + 1
 end
 
+-- Object Oriented Programming LETS GOOOOOOOOOO
 function set_union(a, b)
 	for i, v in pairs(b) do
 		if a[i] then

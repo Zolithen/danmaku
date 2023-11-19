@@ -1,5 +1,3 @@
-gui.Panel = {}
-
 -- To hide a panel you have to use minim not show, like a window (xD)
 function gui.Panel.new(x, y, w, h)
 	local self = {

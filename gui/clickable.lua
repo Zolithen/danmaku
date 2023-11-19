@@ -1,11 +1,11 @@
 -- TODO: Should we use an ECS to handle this kinda stuff or wut
 -- i literally have no idea what i'm doing
 
-gui.ClickableArea = {}
+dnkClickableArea = {}
 
-set_union(gui.ClickableArea, gui.Events);
+set_union(dnkClickableArea, dnkEvents);
 
-function gui.ClickableArea.new(x, y, w, h)
+function dnkClickableArea.new(x, y, w, h)
 	local self = {
 		x = x,
 		y = y,
@@ -15,14 +15,14 @@ function gui.ClickableArea.new(x, y, w, h)
 	};
 
 	setmetatable(self, {
-		__index = gui.ClickableArea
+		__index = dnkClickableArea
 	})
 	self:setup_events();
 
 	return self;
 end
 
-function gui.ClickableArea:update(dt, mx, my)
+function dnkClickableArea:update(dt, mx, my)
 	if self.focused then
 		if not math.point_in_box(mx, my, self:box_full()) then
 			self.focused = false;
@@ -30,7 +30,7 @@ function gui.ClickableArea:update(dt, mx, my)
 	end
 end
 
-function gui.ClickableArea:draw(mx, my)
+function dnkClickableArea:draw(mx, my)
 	if (self.parent:is_mouse_over() and (self.parent.focused and self.focused)) then
 		lg.setColor(gui.Skin.back_highlight2);
 	elseif self.parent:is_mouse_over() and (self.parent.focused and math.point_in_box(mx, my, self:box_full())) then
@@ -42,19 +42,19 @@ function gui.ClickableArea:draw(mx, my)
 	lg.setColor(1, 1, 1, 1);
 end
 
-function gui.ClickableArea:mousepressed(x, y, b)
+function dnkClickableArea:mousepressed(x, y, b)
 	if (b == 1 and self.parent.focused and math.point_in_box(x, y, self:box_full())) then
 		self.focused = true;
 	end
 end
 
-function gui.ClickableArea:mousereleased(x, y, b)
+function dnkClickableArea:mousereleased(x, y, b)
 	if self.focused then
 		self:call("press");
 	end
 	self.focused = false;
 end
 
-function gui.ClickableArea:box_full()
+function dnkClickableArea:box_full()
 	return self.x, self.y, self.w, self.h
 end

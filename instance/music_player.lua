@@ -1,14 +1,18 @@
 if ANDROID then
 	love.audio.setMixWithSystem(true);
 end
+
+local main = dnkWindow(gui, 0, 0, 200, 200, gui.Skin, nil, "test");
+dnkLabel(main, "label", 0, 0, "HOLA");
+dnkButton(main, "button", 0, 32, "teaaaaaaaaaaa");
+
+--[[
 main = gui:new_window(0, 0, lg.getWidth(), lg.getHeight(), "main", "Main");
 main.movable = false;
 main.minimizable = false;
 main.expandable = false;
 
---[[local but = main:add_element(gui.TextButton.new(
-	0, 0, "test"
-));]]
+--main = gui.Window()
 
 local layout_wide = {}
 local layout_amount = 0;
@@ -16,6 +20,14 @@ local layout_amount = 0;
 local panel = main:add_element(gui.Panel.new(
 	0, 0, lg.getWidth()-16, lg.getHeight()-16 
 ))
+
+local test1 = panel:add_element(gui.Panel.new(
+	0, 600, 200, 200
+))
+
+local but1 = test1:add_element(gui.Button.new(
+	10, 10, "tjjgsagika"
+)); 
 
 function laywide_add(t)
 	local a = panel:add_element(gui.ClickableArea.new(
@@ -49,10 +61,6 @@ for i, v in ipairs(songs) do
 	laywide_add(v);
 end
 
---[[laywide_add("Slowdive - Falling Ashes")
-laywide_add("Holy Fawn - Dimensional Bleed")
-laywide_add("death insurance - ohmyg0d")]]
-
 local bar = main:add_element(gui.Slider.new(
 	lg.getWidth()-16,
 	0,
@@ -78,8 +86,8 @@ function love.resize(w, h)
 
 	-- Handle the layout
 	for i, v in ipairs(layout_wide) do
-		v.w = lg.getWidth()-16;
+		v[1].w = lg.getWidth()-16;
 	end
 	bar.x = lg.getWidth()-16;
 	bar.h = lg.getHeight()-16;
-end
+end]]

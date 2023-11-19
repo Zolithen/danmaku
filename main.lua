@@ -1,7 +1,31 @@
+require "tree"
 lg = love.graphics;
 utf8 = require "utf8"
 require "gui"
 ANDROID = gui.android
+
+--[[TestNode = Node:extend("TestNode");
+function TestNode:test()
+	print(self.name)
+	if self.name == "children2" then
+		return NodeResponse.hwall
+	end
+end
+
+local test1 = TestNode(nil, "parent");
+local children1 = TestNode(test1, "children1");
+local children2 = TestNode(test1, "children2");
+local children3 = TestNode(test1, "children3");
+TestNode(children1, "children1,1");
+TestNode(children1, "children1,2");
+TestNode(children2, "children2,1");
+TestNode(children2, "children2,2");
+TestNode(children2, "children2,3");
+TestNode(children3, "children3,1");
+TestNode(children3, "children3,2");
+TestNode(children3, "children3,3");
+TestNode(children3, "children3,4");
+test1:propagate_event("test");]]
 
 function love.load(args)
 	-- how would i make scrollable sections bigger than whatever the fuck the system limit is? skill issue solved easily
@@ -31,20 +55,16 @@ function love.load(args)
 end
 
 function love.update(dt)
-	--love.timer.sleep(0.05);
-	gui:update(dt);
+	gui:propagate_event("update", dt);
 
 	if other_update then
 		other_update();
 	end
-	-- TODO: Remove this in release
-	--[[if love.keyboard.isDown("escape") then
-		love.event.quit();
-	end]]
 end
 
 function love.draw()
-	gui:draw();
+	gui:propagate_event_reverse("draw");
+	gui:propagate_event_reverse("postdraw");
 	lg.setColor(1, 1, 1, 1);
 	lg.print(string.format("FPS: %d", love.timer.getFPS()), lg.getWidth() - 100, 16);
 
@@ -60,19 +80,19 @@ function love.draw()
 end
 
 function love.mousemoved(x, y, dx, dy)
-	gui:mousemoved(x, y, dx, dy)
+	gui:propagate_event("mousemoved", x, y, dy, dx);
 end
 
 function love.mousereleased(x, y, b)
-	gui:mousereleased(x, y, b)
+	gui:propagate_event("mousereleased", x, y, b);
 end
 
 function love.mousepressed(x, y, b)
-	gui:mousepressed(x, y, b)
+	gui:propagate_event("mousepressed", x, y, b);
 end
 
 function love.keypressed(key, scancode, is_repeat)
-	gui:keypressed(key, scancode, is_repeat);
+	gui:propagate_event("keypressed", key, scancode, is_repeat);
 	--[[if key == "f4" then
 		local gui_instance = loadstring(get_file("instance/item_editor.lua"))
 		gui_instance(winc);
@@ -80,7 +100,7 @@ function love.keypressed(key, scancode, is_repeat)
 end
 
 function love.textinput(t)
-	gui:textinput(t);
+	gui:propagate_event("textinput", t);
 end
 
 function get_file(file)

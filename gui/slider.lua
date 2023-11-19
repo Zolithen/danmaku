@@ -11,7 +11,7 @@ function gui.Slider.new(x, y, w, h)
 		boxx = 0,
 		boxy = 0,
 		boxw = 16,
-		boxh = 16,
+		boxh = 32,
 
 		-- Used to correctly call the slide event 
 		last_boxx = 0,
@@ -50,8 +50,8 @@ function gui.Slider:draw(mx, my)
 	lg.rectangle("fill", self.x, self.y, self.w, self.h);
 	if self.focused then
 		lg.setColor(gui.Skin.back_highlight2);
-	elseif (self.parent:is_mouse_over() and self.parent.focused and math.point_in_box(mx, my, self:box_slider())) then
-		lg.setColor(gui.Skin.back_highlight);
+	--elseif (self.parent:is_mouse_over() and self.parent.focused and math.point_in_box(mx, my, self:box_slider())) then
+	--	lg.setColor(gui.Skin.back_highlight);
 	else
 		lg.setColor(gui.Skin.back_light);
 	end
