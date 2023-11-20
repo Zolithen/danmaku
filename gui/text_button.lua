@@ -13,7 +13,8 @@ function dnkButton:init(parent, name, x, y, text)
 	return self;
 end
 
-function dnkButton:update(dt, mx, my)
+function dnkButton:update(dt)
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if self.focused then
 		if not math.point_in_box(mx, my, self:box_full()) then
 			self.focused = false;
@@ -22,7 +23,8 @@ function dnkButton:update(dt, mx, my)
 end
 
 -- TODO: Make this work
-function dnkButton:draw(mx, my)
+function dnkButton:draw()
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if (self.parent:is_mouse_over() and (self.parent.focused and self.focused)) then
 		lg.setColor(gui.Skin.back_highlight2);
 	elseif self.parent:is_mouse_over() and (self.parent.focused and math.point_in_box(mx, my, self:box_full())) then
@@ -36,7 +38,8 @@ function dnkButton:draw(mx, my)
 end
 
 function dnkButton:mousepressed(x, y, b)
-	if (b == 1 and self.parent.focused and math.point_in_box(x, y, self:box_full())) then
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY())
+	if (self.parent:is_mouse_over() and b == 1 and self.parent.focused and math.point_in_box(mx, my, self:box_full())) then
 		self.focused = true;
 	end
 end
@@ -58,5 +61,5 @@ function dnkButton:set_text(t)
 end
 
 function dnkButton:box_full()
-	return self.x, self.y, self.w, self.h
+	return 0, 0, self.w, self.h
 end

@@ -1,4 +1,4 @@
-dnkWindow = Node:extend("dnkWindow")
+dnkWindow = dnkElement:extend("dnkWindow")
 -- movable
 -- expandable
 -- minimizable
@@ -55,7 +55,7 @@ end
 -- h_ = h + 16 + border_width*2
 -- Canvas switches are expensive! Try switching canvases as least as possible
 function dnkWindow:draw()
-	local mx, my = love.mouse.getX(), love.mouse.getY();
+	local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
 	-- Draw the window border
 	if self.focused then
 		lg.setColor(gui.Skin.green);
@@ -86,18 +86,18 @@ function dnkWindow:draw()
 
 		-- Draw the minimize box
 		if self.minimizable then
-			if (self.focused and math.point_in_box(mx, my, self:_box_minimize())) then
+			if (self.focused and math.point_in_box(mx, my, self:box_minimize())) then
 				lg.setColor(gui.Skin.back_highlight);
 			else
 				lg.setColor(gui.Skin.back_light);
 			end
-			lg.rectangle("fill", self:_box_minimize());
+			lg.rectangle("fill", self:box_minimize());
 		end
 
 		if not self.minim then
 			-- Draw the main window
 			lg.setColor(gui.Skin.back);
-			lg.rectangle("fill", self:_box_main());
+			lg.rectangle("fill", self:box_main());
 
 		end
 
@@ -110,7 +110,7 @@ function dnkWindow:draw()
 end
 
 function dnkWindow:postdraw()
-		local mx, my = love.mouse.getX(), love.mouse.getY();
+		local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
 		if not self.minim then
 			lg.translate(0, -self.bar_height);
 		end
@@ -118,12 +118,12 @@ function dnkWindow:postdraw()
 		-- Draw the expand box
 		if not self.minim and self.expandable then
 			-- The box has to be highlitable even if we are not focusing the window
-			if math.point_in_box(mx, my, self:_box_expand()) then
+			if math.point_in_box(mx, my, self:box_expand()) then
 				lg.setColor(gui.Skin.back_highlight)
 			else
 				lg.setColor(gui.Skin.back_light)
 			end
-			lg.rectangle("fill", self:_box_expand());
+			lg.rectangle("fill", self:box_expand());
 		end
 	lg.setCanvas();
 	lg.setColor(1, 1, 1, 1);
@@ -156,11 +156,12 @@ function dnkWindow:mousemoved(x, y, dx, dy)
 end
 
 function dnkWindow:mousepressed(x, y, b)
-	if not math.point_in_box(x, y, self:box_full()) then
+	local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
+	if not math.point_in_box(mx, my, self:box_full()) then
 		return;
 	end
 
-	if (self.minimizable and b == 1 and math.point_in_box(x, y, self:box_minimize())) then
+	if (self.minimizable and b == 1 and math.point_in_box(mx, my, self:box_minimize())) then
 		self.minim = not self.minim;
 	end
 
@@ -174,14 +175,14 @@ function dnkWindow:mousepressed(x, y, b)
 	if self.focused then
 		if b == 1 then -- TODO: Make this work with all buttons pleaseeeee
 			-- Dragging the window around
-			if math.point_in_box(x, y, self:box_bar()) then
+			if math.point_in_box(mx, my, self:box_bar()) then
 				self.dragging = true;
 				self.dox = x - self.x; -- TODO: This may be a bit funky if we have multiple coordinate systems
 				self.doy = y - self.y;
 			end
 			if self.minim then return self.focused end;
 			-- Resizing the window
-			if math.point_in_box(x, y, self:box_expand()) and self.expandable then
+			if math.point_in_box(mx, my, self:box_expand()) and self.expandable then
 				self.expanding = true;
 				self.dox = self.w - x;
 				self.doy = self.h - y;
@@ -228,46 +229,37 @@ function dnkWindow:textinput(t)
 	end
 end
 
-
-function dnkWindow:relative_mouse_pos()
-	-- TODO: add transx here??¿?¿??
-	return self:to_local_cs(love.mouse.getX(), love.mouse.getY());
+-- Turns the given vector to relative window coordinates
+function dnkWindow:transform_vector(x, y)
+	local nx, ny = dnkWindow.super.transform_vector(self, x, y);
+	return nx - self.transx, ny + self.transy - self.bar_height;
 end
 
--- Turns the given vector to relative window coordinates
-function dnkWindow:to_local_cs(x, y)
-	return x - self.x - self.transx, y - self.y - self.bar_height + self.transy
+function dnkWindow:transform_vector_raw(x, y)
+	local nx, ny = dnkWindow.super.transform_vector(self, x, y);
+	return nx, ny;
 end
 
 function dnkWindow:is_mouse_over()
-	return math.point_in_box(love.mouse.getX(), love.mouse.getY(), self:box_full());
+	local mx, my = self:local_mouse_pos();
+	return math.point_in_box(mx, my, self:box_full());
 end
 
 -- Window boxes functions
+-- They are in local coordinates, which means that the left upper corner of the window is (0, 0)
 function dnkWindow:box_bar()
-	return self.x, self.y, self.w, self.bar_height
+	return 0, 0, self.w, self.bar_height
 end
 
 function dnkWindow:box_main()
-	return self.x, self.y+self.bar_height, self.w, self.h
-end
-
-function dnkWindow:_box_main()
 	return 0, self.bar_height, self.w, self.h
 end
 
 function dnkWindow:box_full()
-	return self.x, self.y, self.w, self.h+self.bar_height
+	return 0, 0, self.w, self.h+self.bar_height
 end
 
 function dnkWindow:box_expand() -- Size of the slip
-	return self.x + self.w - self.expand_box_size, 
-		   self.y + self.bar_height + self.h - self.expand_box_size,
-		   self.expand_box_size,
-		   self.expand_box_size
-end
-
-function dnkWindow:_box_expand() -- Size of the slip
 	return self.w - self.expand_box_size, 
 		   self.bar_height + self.h - self.expand_box_size,
 		   self.expand_box_size,
@@ -275,13 +267,6 @@ function dnkWindow:_box_expand() -- Size of the slip
 end
 
 function dnkWindow:box_close()
-	return self.x + self.w - self.bar_height-2,
-		   self.y,
-		   self.bar_height,
-		   self.bar_height
-end
-
-function dnkWindow:_box_close()
 	return self.w - self.bar_height-2,
 		   0,
 		   self.bar_height,
@@ -289,13 +274,6 @@ function dnkWindow:_box_close()
 end
 
 function dnkWindow:box_minimize()
-	return self.x + self.w - 2*self.bar_height-4,
-		   self.y,
-		   self.bar_height,
-		   self.bar_height
-end
-
-function dnkWindow:_box_minimize()
 	return self.w - 2*self.bar_height-4,
 		   0,
 		   self.bar_height,

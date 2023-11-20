@@ -4,7 +4,10 @@ end
 
 local main = dnkWindow(gui, 0, 0, 200, 200, gui.Skin, nil, "test");
 dnkLabel(main, "label", 0, 0, "HOLA");
-dnkButton(main, "button", 0, 32, "teaaaaaaaaaaa");
+local but = dnkButton(main, "button", 0, 32, "teaaaaaaaaaaa");
+but:connect("press", function()
+	print("calasparras");
+end);
 
 --[[
 main = gui:new_window(0, 0, lg.getWidth(), lg.getHeight(), "main", "Main");

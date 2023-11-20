@@ -14,3 +14,7 @@ function dnkElement:call(name, ...)
 		self.events[name](self, ...);
 	end
 end
+
+function dnkElement:local_mouse_pos()
+	return self:transform_vector(love.mouse.getX(), love.mouse.getY());
+end
