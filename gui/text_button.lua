@@ -1,6 +1,5 @@
 dnkButton = dnkElement:extend("dnkButton");
 
--- TODO: Finish changing all this shit
 function dnkButton:init(parent, name, x, y, text)
 	dnkButton.super.init(self, parent, name, x, y);
 	self.text = text;
@@ -22,9 +21,10 @@ function dnkButton:update(dt)
 	end
 end
 
--- TODO: Make this work
+-- TODO: make sure this works correctly
 function dnkButton:draw()
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
+	-- TODO: Use get_holder here i guess
 	if (self.parent:is_mouse_over() and (self.parent.focused and self.focused)) then
 		lg.setColor(gui.Skin.back_highlight2);
 	elseif self.parent:is_mouse_over() and (self.parent.focused and math.point_in_box(mx, my, self:box_full())) then

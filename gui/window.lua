@@ -168,7 +168,6 @@ function dnkWindow:mousepressed(x, y, b)
 	if not self.focused then -- We check first if its not focused so that if we click on an unfocused window we actually process stuff instead of having to click again
 		if b == 1 then
 			self.parent:focus_window(self.child_index);
-			--self.controller:focus_window(self.child_index);
 		end
 	end
 	local must_update = false;
@@ -195,7 +194,7 @@ function dnkWindow:mousepressed(x, y, b)
 	end
 
 	if self.focused then
-		return true; -- Cancel passing the event onto other windows if we clicked the focused window
+		return NodeResponse.hwall; -- Cancel passing the event onto other windows if we clicked the focused window
 	end
 end
 
@@ -212,36 +211,34 @@ function dnkWindow:mousereleased(x, y, b)
 end
 
 function dnkWindow:keypressed(key, scancode, is_repeat)
-	if self.minim then return end;
-	if self.focused then
-		--self.panel:keypressed(key, scancode, is_repeat)
-
-		return true;
-	end
+	if self.minim then 
+		return NodeResponse.vwall; 
+	end;
 end
 
 function dnkWindow:textinput(t)
 	if self.minim then return end;
-	if self.focused then
-		--self.panel:textinput(t);
-
-		return true;
-	end
 end
 
--- Turns the given vector to relative window coordinates
+function dnkWindow:is_holder()
+	return true;
+end
+
+-- Turns the given vector into the window's content's CS
 function dnkWindow:transform_vector(x, y)
 	local nx, ny = dnkWindow.super.transform_vector(self, x, y);
 	return nx - self.transx, ny + self.transy - self.bar_height;
 end
 
+-- Turns the given vector into the window's CS
 function dnkWindow:transform_vector_raw(x, y)
 	local nx, ny = dnkWindow.super.transform_vector(self, x, y);
 	return nx, ny;
 end
 
+-- TODO: Shouldn't we check for is_mouse_over in some events to know if this has happened or some bullshit
 function dnkWindow:is_mouse_over()
-	local mx, my = self:local_mouse_pos();
+	local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
 	return math.point_in_box(mx, my, self:box_full());
 end
 

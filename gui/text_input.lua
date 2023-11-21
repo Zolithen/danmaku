@@ -1,39 +1,30 @@
 -- TODO: Test please
-gui.TextInput = {}
+dnkTextInput = dnkElement:extend("dnkTextInput");
 
-set_union(gui.TextInput, gui.Events);
-
-function gui.TextInput.new(x, y, w, h)
-	local self = {
-		x = x,
-		y = y,
-		w = w,
-		h = h, -- TODO: Change so height is obtained from the font?¿?¿
-		scroll_w = 0,
-		focused = false,
-		text = "",
-		text_drawable = nil,
-		update_canvas = false,
-		cursor_pos = 0
-	}
-
-	setmetatable(self, {
-		__index = gui.TextInput
-	})
-	self:setup_events();
+function dnkTextInput:init(parent, name, x, y, w, h)
+	dnkTextInput.super.init(self, parent, name, x, y);
+	self.w = w;
+	self.h = h; -- TODO: Change so height is obtained from the font?¿?¿
+	self.scroll_w = 0;
+	self.focused = false;
+	self.text = "";
+	self.text_drawable = nil;
+	self.update_canvas = false;
+	self.cursor_pos = 0;
 
 	self.canvas = lg.newCanvas(self.w, self.h);
 	self.text_drawable = love.graphics.newText(gui.Skin.font, self.text);
 	self.text_at_cursor = love.graphics.newText(gui.Skin.font, self.text);
-
-	return self
 end
 
-function gui.TextInput:draw(mx, my)
+function dnkTextInput:draw()
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if self.update_canvas then -- If we updated the canvas every frame we would get high GPU usage
 		lg.push("all");
+		lg.origin();
 		lg.setCanvas(self.canvas);
 			lg.clear();
+			--lg.translate(0, -16)
 
 			lg.setColor(1, 1, 1, 1);
 			lg.draw(self.text_drawable, -self.scroll_w, 0);
@@ -63,8 +54,9 @@ function gui.TextInput:draw(mx, my)
 end
 
 -- TODO: If 2 inputs are near we can select both at once, we shouldn't be able to
-function gui.TextInput:mousepressed(x, y, b)
-	if b == 1 and math.point_in_box(x, y, self:box_full()) then
+function dnkTextInput:mousepressed(x, y, b)
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY())
+	if b == 1 and math.point_in_box(mx, my, self:box_full()) then
 		self.focused = true;
 		if ANDROID then -- TODO: Make this correctly
 			love.keyboard.setTextInput(true, self.x+self.parent.x, self.y+self.parent.y, self.w, self.h);
@@ -78,7 +70,7 @@ function gui.TextInput:mousepressed(x, y, b)
 	end
 end
 
-function gui.TextInput:keypressed(key, scancode, is_repeat)
+function dnkTextInput:keypressed(key, scancode, is_repeat)
 	-- Something will definitely be off here
 	if not self.focused then return end;
 	if key == "backspace" then
@@ -109,7 +101,7 @@ function gui.TextInput:keypressed(key, scancode, is_repeat)
 	self:update_drawable_text(); -- Who cares about it being updated 2 times? TODO: Make sure it's actually garbage collected
 end
 
-function gui.TextInput:textinput(t)
+function dnkTextInput:textinput(t)
 	if self.focused then
 		if self.cursor_pos == 0 then
 			self.text = t .. string.sub(self.text, utf8.offset(self.text, self.cursor_pos), -1);
@@ -123,7 +115,7 @@ function gui.TextInput:textinput(t)
 	self:update_drawable_text();
 end
 
-function gui.TextInput:update_drawable_text()
+function dnkTextInput:update_drawable_text()
 	self.update_canvas = true;
 	self.text_drawable = love.graphics.newText(gui.Skin.font, self.text);
 	if self.cursor_pos == 0 then
@@ -137,6 +129,6 @@ function gui.TextInput:update_drawable_text()
 	self.scroll_w = math.max(0, self.text_at_cursor:getWidth() - 3*self.w/4);
 end
 
-function gui.TextInput:box_full()
-	return self.x, self.y, self.w, self.h
+function dnkTextInput:box_full()
+	return 0, 0, self.w, self.h
 end

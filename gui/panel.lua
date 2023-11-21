@@ -1,44 +1,31 @@
--- To hide a panel you have to use minim not show, like a window (xD)
-function gui.Panel.new(x, y, w, h)
-	local self = {
-		x = x,
-		y = y,
-		w = w,
-		h = h,
-		
-		transx = 0,
-		transy = 0,
-		
-		id = id or math.uuid(),
-		skin = skin,
-		show = true,
-		minim = false, -- Is the Panel minimized? (minim bcs I can't write minimized)
-		focused = true, -- Hack to allow elements to know when the parent window is focused
+dnkPanel = dnkElement:extend("dnkPanel");
 
-		canvas = love.graphics.newCanvas(w, h) -- Canvas to draw the elements to
-	};
+-- TODO: Make the panel work
+-- To hide a panel you have to use minim not show, like a window (xD)
+function dnkPanel:init(parent, name, x, y, w, h)
+	dnkPanel.super.init(self, parent, name, x, y);
+	self.w = w;
+	self.h = h;
+		
+	self.transx = 0;
+	self.transy = 0;
+		
+	self.id = id or math.uuid();
+	self.skin = parent.skin;
+	self.show = true;
+	self.minim = false; -- Is the Panel minimized? (minim bcs I can't write minimized)
+	self.focused = true; -- Hack to allow elements to know when the parent window is focused
+
+	self.canvas = love.graphics.newCanvas(w, h); -- Canvas to draw the elements to
 
 	self.panel = gui.ProtoPanel.new(x, y, w, h);
 	self.panel.parent = self;
 	self.elements = self.panel.elements;
 	self.canvas = self.panel.canvas; -- userdata is not copied, but passed by reference
-
-	setmetatable(self, {
-		__index = gui.Panel
-	});
-
-	return self;
 end
 
-function gui.Panel:add_element(el, id)
-	return self.panel:add_element(el, id);
-end
-
-function gui.Panel:remove_element(id)
-	return self.panel:remove_element(id);
-end
-
-function gui.Panel:draw(mx, my)
+function dnkPanel:draw()
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	-- Draw the Panel border
 	lg.setColor(gui.Skin.green);
 	local bw = gui.Skin.window_border_width;
@@ -49,12 +36,9 @@ function gui.Panel:draw(mx, my)
 	end
 
 	if not self.minim then
-		local tmx, tmy = self:to_local_cs(mx, my);
 		-- Draw the main Panel
 		lg.setColor(gui.Skin.back);
 		lg.rectangle("fill", self:box_main());
-
-		self.panel:draw(mx, my);
 	end
 end
 

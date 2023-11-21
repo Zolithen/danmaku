@@ -30,6 +30,7 @@ ll("window");
 
 ll("text_label")
 ll("text_button");
+ll("text_input");
 
 -- Window controller stuff
 

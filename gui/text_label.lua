@@ -13,10 +13,6 @@ function dnkLabel:draw()
 	lg.draw(self.texture, self.x, self.y);
 end
 
---[[
-	API FUNCTIONS
-]]
-
 function dnkLabel:get_width()
 	return self.texture:getWidth();
 end

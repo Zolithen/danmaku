@@ -4,9 +4,10 @@ end
 
 local main = dnkWindow(gui, 0, 0, 200, 200, gui.Skin, nil, "test");
 dnkLabel(main, "label", 0, 0, "HOLA");
+local input = dnkTextInput(main, "ssss", 0, 64, 100, 16);
 local but = dnkButton(main, "button", 0, 32, "teaaaaaaaaaaa");
-but:connect("press", function()
-	print("calasparras");
+but:connect("press", function(self)
+	print(self:get_holder().title);
 end);
 
 --[[

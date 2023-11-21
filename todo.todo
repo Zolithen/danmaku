@@ -5,5 +5,6 @@
 	- Bigger text fields
 
 - Other stuff:
+	- Know what to do with the Skin (currently using one global variable gui.Skin, probably not good)
 	- Make positioning elements not a pain
 	-> Layout system I guess
