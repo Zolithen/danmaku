@@ -58,13 +58,13 @@ function love.update(dt)
 	gui:propagate_event("update", dt);
 
 	if other_update then
-		other_update();
+		other_update(dt);
 	end
 end
 
 function love.draw()
 	gui:propagate_event_reverse("draw");
-	gui:propagate_event_reverse("postdraw");
+	--gui:propagate_event_reverse("postdraw");
 	lg.setColor(1, 1, 1, 1);
 	lg.print(string.format("FPS: %d", love.timer.getFPS()), lg.getWidth() - 100, 16);
 

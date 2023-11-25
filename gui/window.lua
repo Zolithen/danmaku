@@ -9,7 +9,7 @@ function dnkWindow:init(parent, x, y, w, h, skin, id, title)
 		
 	self.w = w
 	self.h = h
-	self.title = title or ""
+	self:set_title(title or "");
 	self.skin = skin
 	self.focused = false -- TODO: Make it so we can focus windows without them bugging out
 	self.show = true
@@ -41,10 +41,18 @@ end
 -- To resize the window we also have to resize the canvas
 -- TODO: Resizing could be done ¿better? if instead of drawing the whole canvas we draw a quad
 function dnkWindow:resize(new_w, new_h)
-	self.w = math.max(self.expand_box_size, new_w);
+	-- The minimum width of the window is the width of the title + width of the minim box + marging between border and minim box 
+	self.w = math.max(2*self.bar_height-4 + self.bar_height + self.title_texture:getWidth(), new_w);
 	self.h = math.max(self.expand_box_size, new_h);
 	self.canvas:release();
 	self.canvas = lg.newCanvas(self.w, self.h+self.bar_height);
+end
+
+-- Updates the title of the window
+-- Needed to make the drawable update
+function dnkWindow:set_title(new_t)
+	self.title = new_t;
+	self.title_texture = lg.newText(gui.Skin.font, new_t); 
 end
 
 -- Border calculations
@@ -82,7 +90,7 @@ function dnkWindow:draw()
 
 		-- Draw the title
 		lg.setColor(1, 1, 1, 1);
-		lg.print(self.title, 0, 0);
+		lg.draw(self.title_texture, 0, 0);
 
 		-- Draw the minimize box
 		if self.minimizable then
@@ -109,7 +117,7 @@ function dnkWindow:draw()
 		end
 end
 
-function dnkWindow:postdraw()
+function dnkWindow:draw_after_children()
 		local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
 		if not self.minim then
 			lg.translate(0, -self.bar_height);

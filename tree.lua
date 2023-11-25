@@ -128,16 +128,21 @@ function Node:propagate_event(name, ...)
 	if response == NodeResponse.stop then
 		return NodeResponse.stop;
 	end
+
+	local has_to_stop = false;
 	if response ~= NodeResponse.vwall then
 		for i, v in ipairs(self.children) do
 			local response1 = v:propagate_event(name, ...);
 			if response1 == NodeResponse.stop then
-				return NodeResponse.stop;
+				has_to_stop = true;
+				break;
+				--return NodeResponse.stop;
 			end
 		end
 	end
+	if self[name .. "_after_children"] then self[name .. "_after_children"](self, ...) end
 
-	if response == NodeResponse.hwall then
+	if response == NodeResponse.hwall or has_to_stop then
 		return NodeResponse.stop
 	end
 end
@@ -151,16 +156,20 @@ function Node:propagate_event_reverse(name, ...)
 	if response == NodeResponse.stop then
 		return NodeResponse.stop;
 	end
+
+	local has_to_stop = false;
 	if response ~= NodeResponse.vwall then
 		for i, v in r_ipairs(self.children) do
 			local response1 = v:propagate_event_reverse(name, ...);
 			if response1 == NodeResponse.stop then
-				return NodeResponse.stop;
+				has_to_stop = true;
+				break;
 			end
 		end
 	end
+	if self[name .. "_after_children"] then self[name .. "_after_children"](self, ...) end
 
-	if response == NodeResponse.hwall then
+	if response == NodeResponse.hwall or has_to_stop then
 		return NodeResponse.stop;
 	end
 end
