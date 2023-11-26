@@ -15,7 +15,9 @@ local test = dnkWindow(gui, 200, 200, 200, 200, gui.Skin, nil, "lol");
 dnkLabel(test, "llll", 0, 0, "lol");
 local panel = dnkPanel(test, "lol", 0, 32, 200, 200);
 dnkLabel(panel, "te", 0, 0, "hola mundo");
-dnkButton(panel, "button", 170, 16, "loll");
+dnkButton(panel, "button", 170, 16, "loll"):connect("press", function(self)
+	print("osjahgfaosjfnasfoñlas");
+end);
 
 function other_update(dt)
 	--panel.x = panel.x + 1

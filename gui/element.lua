@@ -7,6 +7,7 @@ end
 
 function dnkElement:connect(name, func)
 	self.events[name] = func;
+	return self;
 end
 
 function dnkElement:call(name, ...)
