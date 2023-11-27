@@ -53,7 +53,7 @@ end
 
 function dnkPanel:is_mouse_over()
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
-	return math.point_in_box(mx, my, self:box_full()) and self.parent:is_mouse_over();
+	return math.point_in_box(mx, my, self:box_full()) and self.parent:is_mouse_over(); -- TODO: We assume we have a parent here.
 end
 
 function dnkPanel:transform_vector(x, y)
@@ -63,6 +63,10 @@ function dnkPanel:transform_vector(x, y)
 		local nx, ny = self.parent:transform_vector(x, y);
 		return nx - self.x - self.transx, ny - self.y - self.transy
 	end
+end
+
+function dnkPanel:is_holder()
+	return true;
 end
 
 function dnkPanel:box_full()

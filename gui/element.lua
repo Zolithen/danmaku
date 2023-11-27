@@ -25,14 +25,19 @@ function dnkElement:is_holder()
 end
 
 -- Gets the current holder of the GUI element (ex: window, or panel)
+-- We want holders (like panels) to not return themselves instantly when calling get_holder
 function dnkElement:get_holder()
-	if self:is_holder() then
-		return self;
-	end
-
 	if self.parent then
-		return self.parent:get_holder();	
+		if self.parent:is_holder() then
+			return self.parent;
+		else
+			return self.parent:get_holder();
+		end
 	else
-		error("Trying to get holder of orphan element.");
+		if self:is_holder() then -- TODO: Although here it we return it instantly, should we?¿
+			return self;
+		else
+			error("Trying to get holder of orphan element.");	
+		end
 	end
 end

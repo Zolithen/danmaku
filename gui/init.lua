@@ -27,6 +27,7 @@ ll("element")
 ll("skin");
 ll("window");
 
+ll("group");
 ll("panel")
 ll("clickable");
 ll("text_label")

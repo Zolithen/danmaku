@@ -17,8 +17,9 @@ layout_wide = {}
 end]]
 
 function laywide_add(t)
+	local c = dnkGroup(panel, "", 0, layout_amount*50);
 	local a = dnkClickableArea(
-		panel, "", 0, layout_amount*50, lg.getWidth()-16, 50
+		c, "", 0, 0, lg.getWidth()-16, 50
 	)
 	--[[local a = dnkElement(
 		panel, "", 0, layout_amount*50
@@ -27,11 +28,11 @@ function laywide_add(t)
 	a.h = 50;
 	a.draw = draw_rectangle;]]
 	local b = dnkLabel(
-		panel, "", 0, layout_amount*50, t	
+		c, "", 0, 0, t	
 	)
 	layout_amount = layout_amount + 1;
 
-	table.insert(layout_wide, {a, b});
+	table.insert(layout_wide, c);
 	return a;
 end
 
@@ -51,7 +52,7 @@ function love.resize()
 
 	-- Handle the layout
 	for i, v in ipairs(layout_wide) do
-		v[1].w = lg.getWidth()-16;
+		v.children[1].w = lg.getWidth()-16;
 	end
 	slider.x = lg.getWidth()-16;
 	slider.h = lg.getHeight()-16;
