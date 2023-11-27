@@ -178,6 +178,11 @@ function dnkWindow:mousepressed(x, y, b)
 			self.parent:focus_window(self.child_index);
 		end
 	end
+
+	if self.minim then
+		return NodeResponse.vwall;
+	end
+
 	local must_update = false;
 	if self.focused then
 		if b == 1 then -- TODO: Make this work with all buttons pleaseeeee
@@ -212,7 +217,7 @@ function dnkWindow:mousereleased(x, y, b)
 	self.expanding = false;
 
 
-	if self.minim then return end;
+	if self.minim then return NodeResponse.vwall end;
 	if self.focused then
 		--self.panel:mousereleased(x, y, b);
 	end

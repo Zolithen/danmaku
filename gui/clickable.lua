@@ -1,28 +1,18 @@
--- TODO: Should we use an ECS to handle this kinda stuff or wut
+-- TODO: Should we use a component system to handle this kinda stuff or wut
 -- i literally have no idea what i'm doing
 
-dnkClickableArea = {}
+dnkClickableArea = dnkElement:extend("dnkClickableArea")
 
-set_union(dnkClickableArea, dnkEvents);
+function dnkClickableArea:init(parent, name, x, y, w, h)
+	dnkClickableArea.super.init(self, parent, name, x, y);
 
-function dnkClickableArea.new(x, y, w, h)
-	local self = {
-		x = x,
-		y = y,
-		w = w,
-		h = h,
-		focused = false;
-	};
-
-	setmetatable(self, {
-		__index = dnkClickableArea
-	})
-	self:setup_events();
-
-	return self;
+	self.w = w;
+	self.h = h;
+	self.focused = false;
 end
 
-function dnkClickableArea:update(dt, mx, my)
+function dnkClickableArea:update(dt)
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if self.focused then
 		if not math.point_in_box(mx, my, self:box_full()) then
 			self.focused = false;
@@ -30,7 +20,8 @@ function dnkClickableArea:update(dt, mx, my)
 	end
 end
 
-function dnkClickableArea:draw(mx, my)
+function dnkClickableArea:draw()
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if (self.parent:is_mouse_over() and (self.parent.focused and self.focused)) then
 		lg.setColor(gui.Skin.back_highlight2);
 	elseif self.parent:is_mouse_over() and (self.parent.focused and math.point_in_box(mx, my, self:box_full())) then
@@ -43,7 +34,8 @@ function dnkClickableArea:draw(mx, my)
 end
 
 function dnkClickableArea:mousepressed(x, y, b)
-	if (b == 1 and self.parent.focused and math.point_in_box(x, y, self:box_full())) then
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY())
+	if (b == 1 and self.parent.focused and math.point_in_box(mx, my, self:box_full())) then
 		self.focused = true;
 	end
 end
@@ -56,5 +48,5 @@ function dnkClickableArea:mousereleased(x, y, b)
 end
 
 function dnkClickableArea:box_full()
-	return self.x, self.y, self.w, self.h
+	return 0, 0, self.w, self.h
 end

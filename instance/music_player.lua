@@ -1,76 +1,38 @@
-if ANDROID then
-	love.audio.setMixWithSystem(true);
-end
-
-local main = dnkWindow(gui, 0, 0, 200, 200, gui.Skin, nil, "test");
-dnkLabel(main, "label", 0, 0, "HOLA");
-local input = dnkTextInput(main, "ssss", 0, 64, 100, 16);
-local but = dnkButton(main, "button", 0, 32, "teaaaaaaaaaaa");
-but:connect("press", function(self)
-	print(self:get_holder().title);
-end);
-
-local test = dnkWindow(gui, 200, 200, 200, 200, gui.Skin, nil, "lol");
-
-dnkLabel(test, "llll", 0, 0, "lol");
-local panel = dnkPanel(test, "lol", 0, 32, 200, 200);
-dnkLabel(panel, "te", 0, 0, "hola mundo");
-dnkButton(panel, "button", 170, 16, "loll"):connect("press", function(self)
-	print("osjahgfaosjfnasfoñlas");
-end);
-
-function other_update(dt)
-	--panel.x = panel.x + 1
-end
-
---[[
-main = gui:new_window(0, 0, lg.getWidth(), lg.getHeight(), "main", "Main");
+local main = dnkWindow(gui, 0, 0, lg.getWidth(), lg.getHeight(), gui.Skin, nil, "test");
 main.movable = false;
 main.minimizable = false;
 main.expandable = false;
+local slider = dnkSlider(main, "slider", lg.getWidth()-16, 0, 16, lg.getHeight()-16);
+slider.boxw = 16;
+slider.boxh = 24;
+local panel = dnkPanel(main, "panel", 0, 0, lg.getWidth()-16, lg.getHeight()-16);
+bar = {};
+layout_amount = 0;
+layout_wide = {}
 
---main = gui.Window()
-
-local layout_wide = {}
-local layout_amount = 0;
-
-local panel = main:add_element(gui.Panel.new(
-	0, 0, lg.getWidth()-16, lg.getHeight()-16 
-))
-
-local test1 = panel:add_element(gui.Panel.new(
-	0, 600, 200, 200
-))
-
-local but1 = test1:add_element(gui.Button.new(
-	10, 10, "tjjgsagika"
-)); 
+--[[function draw_rectangle(self)
+	lg.setColor(gui.Skin.back_light);
+	lg.rectangle("fill", self.x, self.y, self.w, self.h);
+	lg.setColor(1, 1, 1, 1);
+end]]
 
 function laywide_add(t)
-	local a = panel:add_element(gui.ClickableArea.new(
-		0, layout_amount*50, lg.getWidth()-16, 50
-	))
-	local b = panel:add_element(gui.Label.new(
-		0, layout_amount*50, t	
-	))
+	local a = dnkClickableArea(
+		panel, "", 0, layout_amount*50, lg.getWidth()-16, 50
+	)
+	--[[local a = dnkElement(
+		panel, "", 0, layout_amount*50
+	);
+	a.w = lg.getWidth()-16;
+	a.h = 50;
+	a.draw = draw_rectangle;]]
+	local b = dnkLabel(
+		panel, "", 0, layout_amount*50, t	
+	)
 	layout_amount = layout_amount + 1;
 
 	table.insert(layout_wide, {a, b});
 	return a;
-end
-
-function laywide_remove(i)
-	local v = layout_wide[i];
-	table.remove(layout_wide, i);
-	layout_amount = layout_amount - 1;
-	panel:remove_element(v[1].id);
-	panel:remove_element(v[2].id);
-end
-
-function laywide_empty()
-	for i, v in r_ipairs(layout_wide) do
-		laywide_remove(i);
-	end
 end
 
 local songs = love.filesystem.getDirectoryItems("songs")
@@ -78,26 +40,12 @@ for i, v in ipairs(songs) do
 	laywide_add(v);
 end
 
-local bar = main:add_element(gui.Slider.new(
-	lg.getWidth()-16,
-	0,
-	16,
-	lg.getHeight()-16
-));
-
 function other_update()
-	panel.transy = -bar.boxy;
-	if love.keyboard.isDown("p") then
-		laywide_empty();
-	end
-	--main.transy = main.transy - 1;
+	panel.transx = slider.boxx;
+	panel.transy = -slider.boxy;
 end
 
-function other_draw()
-
-end
-
-function love.resize(w, h)
+function love.resize()
 	main:resize(lg.getWidth(), lg.getHeight());
 	panel:resize(lg.getWidth()-16, lg.getHeight()-16);
 
@@ -105,6 +53,8 @@ function love.resize(w, h)
 	for i, v in ipairs(layout_wide) do
 		v[1].w = lg.getWidth()-16;
 	end
-	bar.x = lg.getWidth()-16;
-	bar.h = lg.getHeight()-16;
-end]]
+	slider.x = lg.getWidth()-16;
+	slider.h = lg.getHeight()-16;
+
+	slider.boxy = math.clamp(slider.boxy, 0, slider.h - slider.boxh);
+end

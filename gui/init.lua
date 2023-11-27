@@ -25,13 +25,14 @@ ll("util")
 ll("element")
 
 ll("skin");
-ll("proto_panel");
 ll("window");
 
 ll("panel")
+ll("clickable");
 ll("text_label")
 ll("text_button");
 ll("text_input");
+ll("slider");
 
 -- Window controller stuff
 

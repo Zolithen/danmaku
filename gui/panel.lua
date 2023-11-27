@@ -7,6 +7,9 @@ function dnkPanel:init(parent, name, x, y, w, h)
 	self.h = h;
 	self.canvas = lg.newCanvas(self.w, self.h);
 	self.focused = false;
+
+	self.transx = 0;
+	self.transy = 0;
 end
 
 function dnkPanel:resize(new_w, new_h)
@@ -24,6 +27,7 @@ function dnkPanel:draw()
 	-- TODO: Probably only draw the canvas again if something has changed
 	lg.push("all");
 		lg.origin();
+		lg.translate(self.transx, self.transy);
 		lg.setCanvas(self.canvas);
 		lg.clear();
 end
@@ -50,6 +54,15 @@ end
 function dnkPanel:is_mouse_over()
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	return math.point_in_box(mx, my, self:box_full()) and self.parent:is_mouse_over();
+end
+
+function dnkPanel:transform_vector(x, y)
+	if self.parent == nil then
+		return x - self.x - self.transx, y - self.y - self.transy
+	else
+		local nx, ny = self.parent:transform_vector(x, y);
+		return nx - self.x - self.transx, ny - self.y - self.transy
+	end
 end
 
 function dnkPanel:box_full()

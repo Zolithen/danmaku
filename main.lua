@@ -50,7 +50,10 @@ function love.load(args)
 		love.window.setFullscreen(true);
 	end
 
-	local gui_instance = loadstring(get_file("instance/music_player.lua"))
+	local gui_instance, e = loadstring(get_file("instance/music_player.lua"));
+	if gui_instance == nil then
+		error(e);
+	end
 	gui_instance(winc);
 end
 
@@ -63,7 +66,7 @@ function love.update(dt)
 end
 
 function love.draw()
-	gui:propagate_event_reverse("draw");
+	gui:propagate_event("draw");
 	--gui:propagate_event_reverse("postdraw");
 	lg.setColor(1, 1, 1, 1);
 	lg.print(string.format("FPS: %d", love.timer.getFPS()), lg.getWidth() - 100, 16);

@@ -1,39 +1,28 @@
-gui.Slider = {}
+dnkSlider = dnkElement:extend("dnkSlider")
 
-set_union(gui.Slider, gui.Events);
+function dnkSlider:init(parent, name, x, y, w, h)
+	dnkSlider.super.init(self, parent, name, x, y, w, h);
+	self.w = math.max(16, w);
+	self.h = math.max(16, h);
+	self.boxx = 0;
+	self.boxy = 0;
+	self.boxw = 16;
+	self.boxh = 32;
 
-function gui.Slider.new(x, y, w, h)
-	local self = {
-		x = x,
-		y = y,
-		w = math.max(16, w),
-		h = math.max(16, h),
-		boxx = 0,
-		boxy = 0,
-		boxw = 16,
-		boxh = 32,
+	-- Used to correctly call the slide event 
+	self.last_boxx = 0;
+	self.last_boxy = 0;
 
-		-- Used to correctly call the slide event 
-		last_boxx = 0,
-		last_boxy = 0,
-
-		focused = false, -- Focused here is the same as dragging
-		dox = 0,
-		doy = 0;
-	};
-
-	setmetatable(self, {
-		__index = gui.Slider
-	})
-	self:setup_events();
+	self.focused = false; -- Focused here is the same as dragging
+	self.dox = 0;
+	self.doy = 0;
 
 	return self;
 end
 
-function gui.Slider:update(dt, mx, my)
+function dnkSlider:update(dt)
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if self.focused then
-		--[[self.boxx = math.clamp((mx - self.x) - self.dox, 0, self.w-self.boxw);
-		self.boxy = math.clamp((my - self.y) - self.doy, 0, self.h-self.boxh);]]
 		self.boxx = math.clamp(mx + self.dox, 0, self.w-self.boxw);
 		self.boxy = math.clamp(my + self.doy, 0, self.h-self.boxh);
 
@@ -45,7 +34,7 @@ function gui.Slider:update(dt, mx, my)
 end
 
 -- TODO: Fix weird highlighting
-function gui.Slider:draw(mx, my)
+function dnkSlider:draw()
 	lg.setColor(gui.Skin.back3);
 	lg.rectangle("fill", self.x, self.y, self.w, self.h);
 	if self.focused then
@@ -58,30 +47,30 @@ function gui.Slider:draw(mx, my)
 	lg.rectangle("fill", self.x+self.boxx, self.y+self.boxy, self.boxw, self.boxh);
 end
 
-function gui.Slider:mousepressed(x, y, b)
-	if (b == 1 and self.parent.focused and math.point_in_box(x, y, self:box_slider())) then
+function dnkSlider:mousepressed(x, y, b)
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
+	if (b == 1 and self.parent.focused and math.point_in_box(mx, my, self:box_slider())) then
 		self.focused = true;
-		--[[self.dox = (x - self.x) - self.boxx;
-		self.doy = (y - self.y) - self.boxy;]]
-		self.dox = self.boxx - x;
-		self.doy = self.boxy - y;
+
+		self.dox = self.boxx - mx;
+		self.doy = self.boxy - my;
 
 		self.last_boxx = self.boxx;
 		self.last_boxy = self.boxy;
 	end
 end
 
-function gui.Slider:mousereleased(x, y, b)
-	--[[if self.focused then
+function dnkSlider:mousereleased(x, y, b)
+	if self.focused then
 		self:call("press");
-	end]]
+	end
 	self.focused = false;
 end
 
-function gui.Slider:box_full()
-	return self.x, self.y, self.w, self.h
+function dnkSlider:box_full()
+	return 0, 0, self.w, self.h
 end
 
-function gui.Slider:box_slider()
-	return self.x + self.boxx, self.y + self.boxy, self.boxw, self.boxh
+function dnkSlider:box_slider()
+	return self.boxx, self.boxy, self.boxw, self.boxh
 end

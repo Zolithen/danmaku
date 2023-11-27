@@ -43,9 +43,9 @@ local enchantments = {
 table.sort(enchantments)
 
 local windows = {}
-windows.main = gui:new_window(0, 0, 300, 300, "main", "Main");
+windows.main = dnkWindow(gui, 0, 0, 300, 300, gui.Skin, "main", "Main");
 --windows.main.expandable = false;
-windows.enchantments = gui:new_window(0, 0, 600, 420, "enchantments", "Enchantments");
+windows.enchantments = dnkWindow(gui, 0, 0, 600, 420, gui.Skin, "enchantments", "Enchantments");
 windows.enchantments.expandable = false;
 
 --[[local temp = windows.main:add_element(gui.Button.new(
@@ -58,22 +58,22 @@ end);]]
 
 for i, v in ipairs(enchantments) do
 	i = i - 1;
-	local label = windows.enchantments:add_element(gui.Label.new(
+	local label = dnkLabel(windows.enchantments, nil,
 		(i%2) * 300, math.euclid(i, 2)*16 + math.euclid(i, 2)*4 + 4, v
-	))
-	windows.enchantments:add_element(gui.TextInput.new(
+	)
+	dnkTextInput(windows.enchantments, nil,
 		250+(i%2) * 300, label.y, 32, 16
-	))
+	)
 end
 
 local current_y = 0;
 local function add_named_input(name)
-	local l = windows.main:add_element(gui.Label.new(
+	local l = dnkLabel(windows.main, "",
 		0, current_y, name
-	));
-	windows.main:add_element(gui.TextInput.new(
+	);
+	dnkTextInput(windows.main, "",
 		l:get_width()+4, current_y, 160, 16
-	));
+	);
 	current_y = current_y + 20;
 end
 
@@ -81,21 +81,21 @@ add_named_input("Minecraft Item ID");
 add_named_input("Count");
 add_named_input("Damage");
 
-local panel_test = windows.main:add_element(gui.Panel.new(
+local panel_test = dnkPanel(windows.main, "",
 	0, 80, 300, 300
-)); 
+); 
 
-local but = panel_test:add_element(gui.Button.new(
+local but = dnkButton(panel_test, "",
 	0, 0, "test"
-));
+);
 
 but:connect("press", function(t)
 	print("testsssss");
 end)
 
-local hide_test = windows.main:add_element(gui.Button.new(
+local hide_test = dnkButton(windows.main, "",
 	0, 64, "Switch"
-))
+)
 
 hide_test:connect("press", function(t)
 	panel_test.minim = not panel_test.minim;
