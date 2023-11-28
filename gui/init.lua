@@ -50,11 +50,11 @@ end]]
 function gui:focus_window(index)
 	local window_to_focus = self.children[index];
 	table.remove(self.children, index);
-	table.insert(self.children, 1, window_to_focus);
+	table.insert(self.children, window_to_focus);
 
 	for i, v in ipairs(self.children) do
 		v.child_index = i;
 		v.focused = false;
 	end
-	self.children[1].focused = true
+	self.children[#self.children].focused = true
 end

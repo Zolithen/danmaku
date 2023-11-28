@@ -49,7 +49,7 @@ end
 
 function dnkSlider:mousepressed(x, y, b)
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
-	if (b == 1 and self.parent.focused and math.point_in_box(mx, my, self:box_slider())) then
+	if (b == 1 and self:get_root_(1).focused and math.point_in_box(mx, my, self:box_slider())) then
 		self.focused = true;
 
 		self.dox = self.boxx - mx;

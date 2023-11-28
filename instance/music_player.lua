@@ -8,13 +8,22 @@ slider.boxh = 24;
 local panel = dnkPanel(main, "panel", 0, 0, lg.getWidth()-16, lg.getHeight()-16);
 bar = {};
 layout_amount = 0;
-layout_wide = {}
+layout_wide = {};
 
---[[function draw_rectangle(self)
+local dir_bar = dnkGroup(main, "dir_bar", 0, lg.getHeight()-32)
+function draw_rectangle(self)
 	lg.setColor(gui.Skin.back_light);
 	lg.rectangle("fill", self.x, self.y, self.w, self.h);
 	lg.setColor(1, 1, 1, 1);
-end]]
+end
+local dir_bar_rect = dnkElement(dir_bar, "rect", 0, 0);
+dir_bar_rect.w = lg.getWidth()-16;
+dir_bar_rect.h = 24;
+dir_bar_rect.draw = draw_rectangle;
+dnkLabel(dir_bar, "label", 0, 0, "/Yakui - Flock")
+dnkButton(dir_bar, "back", lg.getWidth()-64, 0, "<-"):connect(function(self)
+
+end)
 
 function laywide_add(t)
 	local c = dnkGroup(panel, "", 0, layout_amount*50);
@@ -32,9 +41,31 @@ function laywide_add(t)
 	)
 	layout_amount = layout_amount + 1;
 
+	--[[local n, m = c:get_root_(0);
+	print(n, m);]]
+
 	table.insert(layout_wide, c);
 	return a;
 end
+
+FileNode = Node:extend("FileNode")
+
+function FileNode:init(parent, name, path)
+	FileNode.super.init(self, parent, name);
+	self.is_folder = true;
+	self.path = path;
+	--self.file = love.filesystem.newFile(path);
+	for i, v in ipairs(love.filesystem.getDirectoryItems(path)) do
+		--local file = love.filesystem.newFile(v);
+		if love.filesystem.getInfo(path .. "/" .. v).type == "directory" then
+			FileNode(self, v, path .. "/" .. v);
+		else
+			FileNode(self, v, path .. "/" .. v).is_folder = false;
+		end
+	end
+end
+
+dump_table(FileNode(nil, "", "songs"), "songs");
 
 local songs = love.filesystem.getDirectoryItems("songs")
 for i, v in ipairs(songs) do
@@ -58,4 +89,7 @@ function love.resize()
 	slider.h = lg.getHeight()-16;
 
 	slider.boxy = math.clamp(slider.boxy, 0, slider.h - slider.boxh);
+
+	dir_bar_rect.w = lg.getWidth()-16;
+	dir_bar.y = lg.getHeight()-32;
 end

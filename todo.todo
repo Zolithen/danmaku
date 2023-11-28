@@ -10,3 +10,6 @@
 	- Know what to do with the Skin (currently using one global variable gui.Skin, probably not good)
 	- Make positioning elements not a pain
 	-> Layout system I guess
+
+
+-- An immediate parent of an element is always a holder.

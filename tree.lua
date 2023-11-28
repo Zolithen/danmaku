@@ -76,7 +76,6 @@ function Node:init(parent, name, x, y)
 	self.name = name;
 	self.childs = -1;
 	self.uuid = uuid(); -- Creates an unique identifier for this node
-	math.randomseed(os.time()) -- Makes identifiers even more random
 
 	self:count_child(); -- Sincerely no idea 
 
@@ -226,6 +225,7 @@ function Node:remove_all()
 end
 
 -- Gets the root of the scene graph
+-- TODO: If this is too slow, then do the cache stuff
 function Node:get_root()
 	--if self.cache then return self.cache.root end
 	if self.parent then
@@ -233,6 +233,19 @@ function Node:get_root()
 	end
 	--self.cache.root = self;
 	return self;
+end
+
+-- Gets the node set at hierarchy level i with 0 being the master node
+function Node:get_root_(i)
+	if self.parent then
+		local n, m = self.parent:get_root_(i);
+		if m == 0 then
+			return self, -1;
+		end
+		return n, m - 1;
+	end
+
+	return self, i - 1;
 end
 
 -- Useful functions for transforming coordinates

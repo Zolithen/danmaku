@@ -1,5 +1,6 @@
 dnkButton = dnkElement:extend("dnkButton");
 
+-- A text button can be a group with a dnkClickableArea and dnkLabel as children! (OOP brainrot)
 function dnkButton:init(parent, name, x, y, text)
 	dnkButton.super.init(self, parent, name, x, y);
 	self.text = text;

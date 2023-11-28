@@ -2,6 +2,9 @@ dnkElement = Node:extend("dnkElement");
 
 function dnkElement:init(parent, name, x, y)
 	dnkElement.super.init(self, parent, name, x, y);
+	if parent.is_holder and not parent:is_holder() then
+		error("Non-holder elements should not have children.");
+	end
 	self.events = {};
 end
 
@@ -14,6 +17,10 @@ function dnkElement:call(name, ...)
 	if self.events[name] then
 		self.events[name](self, ...);
 	end
+end
+
+function dnkElement:get_window()
+	return self:get_root(1);
 end
 
 function dnkElement:local_mouse_pos()

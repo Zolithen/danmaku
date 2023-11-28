@@ -16,6 +16,10 @@ function dnkGroup:update() -- TODO: Change all occurences of parent.focused to h
 	self.focused = self.parent.focused;
 end
 
+function dnkGroup:is_holder()
+	return true;
+end
+
 function dnkGroup:is_mouse_over()
 	return self.parent:is_mouse_over();
 end

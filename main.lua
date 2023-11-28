@@ -1,3 +1,4 @@
+math.randomseed(os.time())
 require "tree"
 lg = love.graphics;
 utf8 = require "utf8"
@@ -27,6 +28,9 @@ TestNode(children3, "children3,3");
 TestNode(children3, "children3,4");
 test1:propagate_event("test");]]
 
+require "datadump"
+
+--dump_table(love, "love");
 function love.load(args)
 	-- how would i make scrollable sections bigger than whatever the fuck the system limit is? skill issue solved easily
 	--[[for i, v in pairs(lg.getSystemLimits()) do
@@ -55,6 +59,7 @@ function love.load(args)
 		error(e);
 	end
 	gui_instance(winc);
+	dump_table(gui, "gui");
 end
 
 function love.update(dt)
@@ -83,19 +88,19 @@ function love.draw()
 end
 
 function love.mousemoved(x, y, dx, dy)
-	gui:propagate_event("mousemoved", x, y, dy, dx);
+	gui:propagate_event_reverse("mousemoved", x, y, dy, dx);
 end
 
 function love.mousereleased(x, y, b)
-	gui:propagate_event("mousereleased", x, y, b);
+	gui:propagate_event_reverse("mousereleased", x, y, b);
 end
 
 function love.mousepressed(x, y, b)
-	gui:propagate_event("mousepressed", x, y, b);
+	gui:propagate_event_reverse("mousepressed", x, y, b);
 end
 
 function love.keypressed(key, scancode, is_repeat)
-	gui:propagate_event("keypressed", key, scancode, is_repeat);
+	gui:propagate_event_reverse("keypressed", key, scancode, is_repeat);
 	--[[if key == "f4" then
 		local gui_instance = loadstring(get_file("instance/item_editor.lua"))
 		gui_instance(winc);
@@ -103,7 +108,7 @@ function love.keypressed(key, scancode, is_repeat)
 end
 
 function love.textinput(t)
-	gui:propagate_event("textinput", t);
+	gui:propagate_event_reverse("textinput", t);
 end
 
 function get_file(file)
