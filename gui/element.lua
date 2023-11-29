@@ -2,7 +2,7 @@ dnkElement = Node:extend("dnkElement");
 
 function dnkElement:init(parent, name, x, y)
 	dnkElement.super.init(self, parent, name, x, y);
-	if parent.is_holder and not parent:is_holder() then
+	if parent and parent.is_holder and not parent:is_holder() then
 		error("Non-holder elements should not have children.");
 	end
 	self.events = {};
@@ -28,6 +28,12 @@ function dnkElement:local_mouse_pos()
 end
 
 function dnkElement:is_holder()
+	return false;
+end
+
+-- A resizable element should include a :resize function
+-- TODO: Should we do the checks of resizability with .resize == nil instead of this? probably
+function dnkElement:is_resizable()
 	return false;
 end
 

@@ -74,7 +74,7 @@ function love.draw()
 	gui:propagate_event("draw");
 	--gui:propagate_event_reverse("postdraw");
 	lg.setColor(1, 1, 1, 1);
-	lg.print(string.format("FPS: %d", love.timer.getFPS()), lg.getWidth() - 100, 16);
+	--lg.print(string.format("FPS: %d", love.timer.getFPS()), lg.getWidth() - 100, lg.getHeight()-16);
 
 	lg.setColor(1, 0, 0, 1);
 
@@ -109,6 +109,13 @@ end
 
 function love.textinput(t)
 	gui:propagate_event_reverse("textinput", t);
+end
+
+function love.resize()
+	gui:propagate_event_reverse("love_resize_window");
+	if other_resize then
+		other_resize();
+	end
 end
 
 function get_file(file)

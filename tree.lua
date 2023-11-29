@@ -42,10 +42,11 @@ return setmetatable(class,{__call = function(_,...) return _class(...) end })
 end
 class = create_30log()
 
-lg = love.graphics
-
 -- 30log classes
 Node = class("Node");
+
+-- This values are returned from Node's events in propagate_event to know how to proceed executing the event
+-- If no response is returned, then normal behaviour is expected
 NodeResponse = {
 	stop = 1, -- Completely stops propagating the event further
 	hwall = 2,  -- Stops propagating the event to the children of the parent node, but not to the children of the current node
@@ -54,18 +55,17 @@ NodeResponse = {
 
 Node.children = {};
 
--- TODO : change this function cus this code is unlicensed although its a gist
---https://gist.github.com/jrus/3197011
-local random = math.random
+-- Generates an UUID
+-- & : String - > An UUID
 local function uuid()
     local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
     return string.gsub(template, '[xy]', function (c)
-        local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
+        local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
         return string.format('%x', v)
     end)
 end
 
--- Initialize a node:
+-- Initialize a node
 -- parent : Node -> The parent this node belongs to.
 -- name : String -> Name of the node
 -- x : Number -> x position of the node
@@ -96,8 +96,9 @@ function Node:count_child()
 	end
 end
 
--- Gets a variable from the root node of this graph
+-- Returns a variable from the root of the tree
 -- name : String -> The name of the variable to retrieve
+-- & : Value
 function Node:get_root_attr(name)
 	if self.parent then
 		return self.parent:get_root_attr(name) or nil;
@@ -110,15 +111,14 @@ end
 -- n : Node -> Node to add
 function Node:add(n)
 	table.insert(self.children, n);
+	n.parent = self;
 	n.child_index = #self.children;
 	if self.on_add_children then
 		self:on_add_children(n, #self.children);
 	end
 end
 
--- NodeResponse.stop
--- NodeResponse.wall
--- Propagates an event to the entire tree or pool
+-- Propagates an event to the entire tree going forwards in the children list
 -- name : String -> Name of the event
 -- ... -> Arguments to pass onto the event
 function Node:propagate_event(name, ...)
@@ -135,7 +135,6 @@ function Node:propagate_event(name, ...)
 			if response1 == NodeResponse.stop then
 				has_to_stop = true;
 				break;
-				--return NodeResponse.stop;
 			end
 		end
 	end
@@ -146,7 +145,7 @@ function Node:propagate_event(name, ...)
 	end
 end
 
--- Propagates an event to the entire tree going backwards
+-- Propagates an event to the entire tree going backwards in the children list
 -- name : String -> Name of the event
 -- ... -> Arguments to pass onto the event
 function Node:propagate_event_reverse(name, ...)
@@ -173,9 +172,10 @@ function Node:propagate_event_reverse(name, ...)
 	end
 end
 
--- Finds a node in the tree that satisfies the condition
+-- Finds all the nodes that satisfy the given conditions
 -- cond : Function -> Function that returns true if the node satisfies the condition
 -- ^ t : Table -> Internal argument used to store the list of found nodes
+-- & : List<Node> -> Table with all the found nodes
 function Node:find(cond, t)
 	local t = t or {};
 	for i, v in ipairs(self.children) do
@@ -187,8 +187,10 @@ function Node:find(cond, t)
 	return t;
 end
 
--- Find the first node named name
--- TODO : Optimization
+-- Find the first node named name under the current node
+-- a : String -> Name of the node to search for
+-- ^ t : Table -> Internal argument to keep track of something
+-- & : Node -> Found node
 function Node:find_name(a, t)
 	local t = t or {};
 	for i, v in ipairs(self.children) do
@@ -196,14 +198,14 @@ function Node:find_name(a, t)
 			table.insert(t, v);
 			break;
 		else
-			t = v:find(a, t);
+			t = v:find_name(a, t);
 		end	
 	end
 	return t[1];
 end
 
--- Safely deletes the node
-function Node:remove()
+-- Safely deletes the node and the references in the parent node
+function Node:delete()
 	if self.parent then -- If the node has a parent...
 		table.remove(self.parent.children, self.child_index); -- we remove it from the parent's children table
 		for i, v in ipairs(self.parent.children) do -- we update the children index of all the remaining childrens from the parent
@@ -211,31 +213,43 @@ function Node:remove()
 		end
 	end
 	for i, v in ipairs(self.children) do -- We delete every children of this node
-		v:remove();
+		v:delete();
 	end
 	self = nil; -- We finally delete the node
-
 end
 
--- Removes all children nodes
-function Node:remove_all()
+-- Deletes all the children's nodes
+function Node:delete_all()
 	for i, v in r_ipairs(self.children) do
-		v:remove();
+		v:delete();
+	end
+end
+
+-- Removes the node from the parent's children list and updates things correctly
+function Node:remove_from_parent()
+	if self.parent then
+		table.remove(self.parent.children, self.child_index); -- we remove it from the parent's children table
+		for i, v in ipairs(self.parent.children) do -- we update the children index of all the remaining childrens from the parent
+			v.child_index = i;
+		end
+		self.parent = nil;
+	else
+		error("Trying to remove parent from orphan node.");
 	end
 end
 
 -- Gets the root of the scene graph
--- TODO: If this is too slow, then do the cache stuff
+-- & : Node -> Root node
 function Node:get_root()
-	--if self.cache then return self.cache.root end
 	if self.parent then
 		return self.parent:get_root();
 	end
-	--self.cache.root = self;
 	return self;
 end
 
 -- Gets the node set at hierarchy level i with 0 being the master node
+-- i : Integer -> Hierarchy level
+-- & : Node -> Found node
 function Node:get_root_(i)
 	if self.parent then
 		local n, m = self.parent:get_root_(i);
@@ -248,7 +262,10 @@ function Node:get_root_(i)
 	return self, i - 1;
 end
 
--- Useful functions for transforming coordinates
+-- Returns the given vector in the Node's local coordinate system 
+-- x : Number -> X Coord
+-- y : Number -> Y Coord
+-- &: (Number, Number) -> Transformed coordinates
 function Node:transform_vector(x, y)
 	if self.parent == nil then
 		return x - self.x, y - self.y

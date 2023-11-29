@@ -35,6 +35,7 @@ end
 
 function dump_table(x, n)
 	ret = dump_table1(x, 0, "")
+	ret = "<body style=\"background-color:black;color:white;\">" .. ret .. "</body>"
 	writefile(n .. ".html", ret)
 	return(ret)
 end

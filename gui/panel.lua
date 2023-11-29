@@ -7,6 +7,7 @@ function dnkPanel:init(parent, name, x, y, w, h)
 	self.h = h;
 	self.canvas = lg.newCanvas(self.w, self.h);
 	self.focused = false;
+	self.border = true;
 
 	self.transx = 0;
 	self.transy = 0;
@@ -36,13 +37,15 @@ function dnkPanel:draw_after_children()
 		lg.setCanvas();
 	lg.pop();
 	
-	if self.focused then
-		lg.setColor(gui.Skin.green);
-	else
-		lg.setColor(gui.Skin.red);
+	if self.border then
+		if self.focused then
+			lg.setColor(gui.Skin.green);
+		else
+			lg.setColor(gui.Skin.red);
+		end
+		local bw = gui.Skin.window_border_width;
+		lg.rectangle("fill", self.x-bw, self.y-bw, self.w+bw*2, self.h+bw*2);
 	end
-	local bw = gui.Skin.window_border_width;
-	lg.rectangle("fill", self.x-bw, self.y-bw, self.w+bw*2, self.h+bw*2);
 	
 	lg.setColor(gui.Skin.back);
 	lg.rectangle("fill", self.x, self.y, self.w, self.h);
