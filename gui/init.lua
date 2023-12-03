@@ -34,6 +34,7 @@ ll("text_label")
 ll("text_button");
 ll("text_input");
 ll("slider");
+ll("on_off_button");
 
 -- Window controller stuff
 

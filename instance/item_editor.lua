@@ -48,14 +48,6 @@ windows.main = dnkWindow(gui, 0, 0, 300, 300, gui.Skin, "main", "Main");
 windows.enchantments = dnkWindow(gui, 0, 0, 600, 420, gui.Skin, "enchantments", "Enchantments");
 windows.enchantments.expandable = false;
 
---[[local temp = windows.main:add_element(gui.Button.new(
-	0, 16, "test", 0, 0
-));
-temp:connect("press", function(t)
-	windows.main.show = not windows.main.show;
-	print("i got pressed");
-end);]]
-
 for i, v in ipairs(enchantments) do
 	i = i - 1;
 	local label = dnkLabel(windows.enchantments, nil,
@@ -67,43 +59,30 @@ for i, v in ipairs(enchantments) do
 end
 
 local current_y = 0;
-local function add_named_input(name)
+local function add_named_input(id, name)
 	local l = dnkLabel(windows.main, "",
 		0, current_y, name
 	);
-	dnkTextInput(windows.main, "",
+	dnkTextInput(windows.main, id,
 		l:get_width()+4, current_y, 160, 16
 	);
 	current_y = current_y + 20;
 end
 
-add_named_input("Minecraft Item ID");
-add_named_input("Count");
-add_named_input("Damage");
+add_named_input("item_id", "Minecraft Item ID");
+add_named_input("count", "Count");
+add_named_input("dmg", "Damage");
+dnkButton(windows.main, "clipboard_button", 0, current_y, "Copy to cliboard"):connect("press", function(self)
+	love.system.setClipboardText(create_command());
+end);
+current_y = current_y + 20;
 
-local panel_test = dnkPanel(windows.main, "",
-	0, 80, 300, 300
-); 
+dnkCheckbox(windows.main, "bold", 0, 200);
 
-local but = dnkButton(panel_test, "",
-	0, 0, "test"
-);
-
-but:connect("press", function(t)
-	print("testsssss");
-end)
-
-local hide_test = dnkButton(windows.main, "",
-	0, 64, "Switch"
-)
-
-hide_test:connect("press", function(t)
-	panel_test.minim = not panel_test.minim;
-end)
-
--- TODO: Make a layout system or something
-function other_update(dt)
+function create_command()
+	local com = "/give @s " .. windows.main:find_name_in_children("item_id").text;
 	
+	return com;
 end
 
 function other_draw()
@@ -112,10 +91,3 @@ function other_draw()
 	--lg.print(string.format("%d,%d,%d,%d", panel_test:box_full()), 0, 48);
 	--lg.print(tostring(math.point_in_box(panel_test.window:relative_mouse_pos(), panel_test:box_full())), 0, 64)
 end
-
---[[local label_mc_item_id = windows.main:add_element(gui.Label.new(
-	0, 0, "Minecraft Item ID"
-));
-windows.main:add_element(gui.TextInput.new(
-	label_mc_item_id:get_width()+4, 0, 160, 16
-));]]

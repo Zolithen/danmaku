@@ -20,5 +20,5 @@ end
 function dnkLabel:set_text(t)
 	self.text = t;
 	self.texture:release();
-	self.texture = love.graphics.newText(skin.font, self.text);
+	self.texture = love.graphics.newText(gui.Skin.font, self.text);
 end

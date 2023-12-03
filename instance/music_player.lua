@@ -23,7 +23,7 @@ local dir_bar_rect = dnkElement(dir_bar, "rect", 0, 0);
 dir_bar_rect.w = lg.getWidth()-16;
 dir_bar_rect.h = 24;
 dir_bar_rect.draw = draw_rectangle;
-dnkLabel(dir_bar, "label", 0, 0, "/Yakui - Flock")
+local dir_bar_label = dnkLabel(dir_bar, "label", 0, 0, "/Yakui - Flock")
 dnkButton(dir_bar, "back", lg.getWidth()-64, 0, "<-"):connect("press", function(self)
 	local current_layouter = panel:find_name("master_layouter");
 	if current_layouter.file_node.parent then
@@ -31,6 +31,11 @@ dnkButton(dir_bar, "back", lg.getWidth()-64, 0, "<-"):connect("press", function(
 		panel:add(current_layouter.file_node.parent.layouter);
 	end
 end)
+
+local current_song = {
+	song = nil,
+	path = ""
+};
 
 WideLayouter = dnkElement:extend("WideLayouter");
 
@@ -56,8 +61,10 @@ function WideLayouter:is_mouse_over()
 	return self.parent:is_mouse_over();
 end
 
-function WideLayouter:love_resize_window()
-
+function WideLayouter:on_resize()
+	for i, v in ipairs(self.children) do
+		v:find_name("area").w = lg.getWidth()-16;
+	end
 end
 
 FileNode = Node:extend("FileNode")
@@ -77,11 +84,21 @@ function FileNode:init(parent, name, path)
 		end
 
 		local g = dnkGroup(self.layouter, "", 0, 0);
+		-- Instead of doing the resize to the width of screen stuff you can just set this to have a lot of width
 		dnkClickableArea(g, "area", 0, 0, lg.getWidth()-16, 50):connect("press", function(area)
 			if file_node.is_folder then
 				local current_layouter = panel:find_name("master_layouter");
 				current_layouter:remove_from_parent();
 				panel:add(file_node.layouter);
+			else -- We selected music
+				if current_song.song ~= nil then
+					current_song.song:stop();
+				end
+				current_song.path = file_node.path;
+				current_song.song = love.audio.newSource(file_node.path, "stream");
+				current_song.duration = current_song.song:getDuration();
+				current_song.song:play();
+				dir_bar_label:set_text(file_node.path);
 			end
 		end);
 		dnkLabel(g, "label", 0, 0, v);
@@ -97,9 +114,16 @@ local songs = love.filesystem.getDirectoryItems("songs")
 	laywide_add(v);
 end]]
 
-function other_update()
+function other_update(dt)
 	panel.transx = slider.boxx;
 	panel.transy = -slider.boxy;
+end
+
+function other_draw()
+	if current_song.song then
+		lg.setColor(1, 1, 1, 1);
+		lg.print(string.format("%d/%d", current_song.song:tell(), current_song.duration), 100, 0);
+	end
 end
 
 function other_resize()
@@ -107,9 +131,13 @@ function other_resize()
 	panel:resize(math.max(lg.getWidth()-16, 1), math.max(lg.getHeight()-32, 1));
 
 	-- Handle the layout
-	local current_layouter = panel:find_name("master_layouter");
+	--[[local current_layouter = panel:find_name("master_layouter");
 	for i, v in ipairs(current_layouter.children) do
 		v:find_name("area").w = lg.getWidth()-16;
+	end]]
+	master_directory.layouter:on_resize();
+	for i, v in ipairs(master_directory.children) do
+		v.layouter:on_resize();
 	end
 	slider.x = lg.getWidth()-16;
 	slider.h = lg.getHeight()-16;

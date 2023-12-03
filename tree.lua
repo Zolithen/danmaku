@@ -204,6 +204,17 @@ function Node:find_name(a, t)
 	return t[1];
 end
 
+-- Finds the first node named name in the children's list
+-- a : String -> Name of the node to search for
+-- & : Node -> Found node (if any)
+function Node:find_name_in_children(n)
+	for i, v in ipairs(self.children) do
+		if v.name == n then
+			return v;
+		end
+	end
+end
+
 -- Safely deletes the node and the references in the parent node
 function Node:delete()
 	if self.parent then -- If the node has a parent...
