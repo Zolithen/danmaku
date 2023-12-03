@@ -1,7 +1,9 @@
-# Stunenca
+# Danmaku
 
 This project uses:
+
 	1. **30log**: https://github.com/Yonaba/30log
+	
 	2. **Stunenca** : https://github.com/Zolithen/Stunenca
 
 _Copyright 2023 Zolithen
