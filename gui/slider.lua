@@ -29,6 +29,12 @@ function dnkSlider:update(dt)
 		if self.last_boxx ~= self.boxx or self.last_boxy ~= self.boxy then
 			self.last_boxx = self.boxx;
 			self.last_boxy = self.boxy;			
+
+			-- TODO: Make the binding take into account the content height of the panel
+			if self.bound_to then -- Update the displacement of the bound to panel
+				self.bound_to.transx = self.boxx;
+				self.bound_to.transy = -self.boxy;
+			end
 		end
 	end
 end
@@ -65,6 +71,13 @@ function dnkSlider:mousereleased(x, y, b)
 		self:call("press");
 	end
 	self.focused = false;
+end
+
+-- Binds the slider to a panel so that it scrolls down with the slider
+function dnkSlider:bind(p)
+	self.bound_to = p;
+
+	return self;
 end
 
 function dnkSlider:box_full()

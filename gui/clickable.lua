@@ -1,6 +1,3 @@
--- TODO: Should we use a component system to handle this kinda stuff or wut
--- i literally have no idea what i'm doing
-
 dnkClickableArea = dnkElement:extend("dnkClickableArea")
 
 function dnkClickableArea:init(parent, name, x, y, w, h)

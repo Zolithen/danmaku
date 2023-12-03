@@ -80,7 +80,6 @@ function dnkWindow:draw()
 	lg.setCanvas(self.canvas);
 		lg.clear();
 		-- Draw the bar
-		-- TODO: I don't want to put every box (what the fuck did he mean by this)
 		if (math.point_in_box(mx, my, self:box_bar()) and not math.point_in_box(mx, my, self:box_minimize())) then
 			lg.setColor(gui.Skin.bar_light);
 		else
