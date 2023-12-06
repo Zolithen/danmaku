@@ -71,9 +71,25 @@ dnkButton(windows.projects, "new_project", 0, 300-16, "New Project"):connect("pr
 end);
 
 function other_update(dt)
-	local max_ty = math.max(project_panel.h, project_list.content_height);
-	local ratio = math.max(0, project_list.content_height - project_panel.h)/max_ty;
-	local old_bh = project_slider.boxh;
+	local newh_c = math.max(project_panel.h + 1, project_list.content_height);
+	local y_p = -project_panel.transy;
+	local y_b = project_slider.boxy;
+	local h_p = project_panel.h;
+	local h_s = project_slider.h;
+	local h_b = project_slider.boxh;
+	local h_c = (y_p / y_b) * (h_s - h_b) + h_p;
+	local newh_b = h_s * (h_p / newh_c)
+	project_slider.boxh = newh_b;
+	project_slider.boxy = math.max(1, ((h_s - newh_b) * (h_c - h_p)) / ((newh_c - h_p) * (h_s - h_b)) * y_b); 
+
+	--project_slider.boxh = project_slider.h * ratio
+	--project_slider.boxy = project_panel.transy;
+
+	--[[
+		self.bound_to.transy = math.floor(
+			((math.max(self.bound_to.h, self.bound_to.content_height) - self.bound_to.h) / (self.h - self.boxh)) * -self.boxy
+		)
+	]]
 
 	--project_slider.boxh = project_slider.h * ratio;
 	--project_slider.boxh
@@ -86,5 +102,6 @@ end
 function other_draw()
 	lg.setColor(1, 1, 1, 1)
 	lg.print(project_list.current);
+	lg.print(project_slider.boxy, 0, 16)
 	--lg.print(project_list.transy, 0, 16);
 end
