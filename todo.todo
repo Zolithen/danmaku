@@ -1,3 +1,4 @@
+- Fix dnkGroup content height (update it's box_full or something?)
 - GUI Elements:
 	- S
 	- Buttons
@@ -5,6 +6,7 @@
 	- Bigger text fields
 
 - Other stuff:
+	- If performance is bad we could start caching stuff like get_root calls
 	- UTF8 sucks, fix the text inputs randomly crashing
 	- Ensure if a window is minimized then all the correct events get vwalled
 	- Know what to do with the Skin (currently using one global variable gui.Skin, probably not good)
@@ -13,3 +15,4 @@
 
 
 -- An immediate parent of an element is always a holder.
+-- If using scroll bars, call calculate_content_height on the panel after adding children for everything to update correctly

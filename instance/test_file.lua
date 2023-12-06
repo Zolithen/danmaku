@@ -19,6 +19,9 @@ dnkButton(panel, "button", 170, 16, "loll"):connect("press", function(self)
 	print("osjahgfaosjfnasfoñlas");
 end);
 
+print(main:calculate_content_height())
+print(test:calculate_content_height())
+
 function other_update(dt)
 	--panel.x = panel.x + 1
 end

@@ -22,3 +22,7 @@ function dnkLabel:set_text(t)
 	self.texture:release();
 	self.texture = love.graphics.newText(gui.Skin.font, self.text);
 end
+
+function dnkLabel:box_full()
+	return 0, 0, self.texture:getWidth(), self.texture:getHeight();
+end

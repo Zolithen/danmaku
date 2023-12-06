@@ -9,7 +9,7 @@ function dnkSlider:init(parent, name, x, y, w, h)
 	self.boxw = 16;
 	self.boxh = 32;
 
-	-- Used to correctly call the slide event 
+	-- Used to correctly call the slide event
 	self.last_boxx = 0;
 	self.last_boxy = 0;
 
@@ -32,8 +32,12 @@ function dnkSlider:update(dt)
 
 			-- TODO: Make the binding take into account the content height of the panel
 			if self.bound_to then -- Update the displacement of the bound to panel
-				self.bound_to.transx = self.boxx;
-				self.bound_to.transy = -self.boxy;
+				-- TODO: Check if the floor here gives no errors over all and consider putting the floor in the lg.translate in panel&window draw funcs
+
+				-- TODO: When resizing the content height make the boxh smaller to maintain something idk
+				self.bound_to.transy = math.floor(
+					((math.max(self.bound_to.h, self.bound_to.content_height) - self.bound_to.h) / (self.h - self.boxh)) * -self.boxy
+				)
 			end
 		end
 	end

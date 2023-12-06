@@ -61,8 +61,30 @@ windows.projects = dnkWindow(gui, 0, 0, 300, 304, gui.Skin, "projects", "Project
 windows.projects.expandable = false;
 
 local project_panel = dnkPanel(windows.projects, "panel", 0, 0, 300, 300-16)
-dnkSlider(windows.projects, "slider", 300-16, 0, 16, 304):bind(project_panel);
-local project_list = Stacker(project_panel, "project_list", 0, 0); 
+local project_slider = dnkSlider(windows.projects, "slider", 300-16, 0, 16, 304):bind(project_panel);
+local project_list = Stacker(project_panel, "project_list", 0, 0);
+--project_list:calculate_content_height();
 dnkButton(windows.projects, "new_project", 0, 300-16, "New Project"):connect("press", function(self)
 	local but = dnkButton(project_list, "p" .. project_list.current, 0, 0, "Project " .. project_list.current);
+	project_panel:calculate_content_height();
+
 end);
+
+function other_update(dt)
+	local max_ty = math.max(project_panel.h, project_list.content_height);
+	local ratio = math.max(0, project_list.content_height - project_panel.h)/max_ty;
+	local old_bh = project_slider.boxh;
+
+	--project_slider.boxh = project_slider.h * ratio;
+	--project_slider.boxh
+	--project_slider.boxy = (project_slider.boxh/old_bh) * project_slider.boxy;
+
+	--project_slider.boxw = project_slider.w * (project_panel.w / math.max(project_panel.w, project_list.w))
+	--project_slider.boxx = (project_slider.boxw/old_bw) * project_slider.boxx;
+end
+
+function other_draw()
+	lg.setColor(1, 1, 1, 1)
+	lg.print(project_list.current);
+	--lg.print(project_list.transy, 0, 16);
+end

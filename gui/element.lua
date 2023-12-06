@@ -6,6 +6,7 @@ function dnkElement:init(parent, name, x, y)
 		error("Non-holder elements should not have children.");
 	end
 	self.events = {};
+	self.content_height = 0;
 end
 
 function dnkElement:connect(name, func)
@@ -20,7 +21,7 @@ function dnkElement:call(name, ...)
 end
 
 function dnkElement:get_window()
-	return self:get_root(1);
+	return self:get_root_(1);
 end
 
 function dnkElement:local_mouse_pos()
@@ -53,4 +54,44 @@ function dnkElement:get_holder()
 			error("Trying to get holder of orphan element.");	
 		end
 	end
+end
+
+--[[function dnkElement:on_add_children(n, id)
+	if not self:instanceOf(dnkWindow) then
+		self:get_window():on_add_children(n, id)
+	end
+end]]
+
+-- Returns the box the element resides in local coordinates ((0,0) is the element's upper left corner)
+function dnkElement:box_full()
+	return 0, 0, 0, 0
+end
+
+-- It's important to have setters for the position because an update to the position may cause us to recalculate stuff like the content height
+-- It may be good practice if we want to cache things later on
+function dnkElement:set_x(x)
+	self.x = x;
+	self:get_window():calculate_content_height();
+end
+
+function dnkElement:set_y(y)
+	self.y = y;
+	self:get_window():calculate_content_height();
+end
+
+-- Calculates the height of all the content in the window. Used for scrolling n stuff
+function dnkElement:calculate_content_height()
+	local maxy, _x, _y, _w, _h = 0, 0, 0, 0, 0;
+
+	for i, v in ipairs(self.children) do
+		if v:instanceOf(dnkGroup) then
+			_h = v:calculate_content_height(); 
+		else
+			_x, _y, _w, _h = v:box_full();
+		end
+		maxy = math.max(maxy, v.y + _h);
+	end
+
+	self.content_height = maxy;
+	return maxy;
 end
