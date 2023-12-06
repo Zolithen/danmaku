@@ -73,7 +73,7 @@ end);
 function other_update(dt)
 	local newh_c = math.max(project_panel.h + 1, project_list.content_height);
 	local y_p = -project_panel.transy;
-	local y_b = project_slider.boxy;
+	local y_b = math.max(project_slider.boxy, 0.1);
 	local h_p = project_panel.h;
 	local h_s = project_slider.h;
 	local h_b = project_slider.boxh;

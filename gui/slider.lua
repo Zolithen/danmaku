@@ -5,7 +5,7 @@ function dnkSlider:init(parent, name, x, y, w, h)
 	self.w = math.max(16, w);
 	self.h = math.max(16, h);
 	self.boxx = 0;
-	self.boxy = 1;
+	self.boxy = 0;
 	self.boxw = 16;
 	self.boxh = 32;
 
