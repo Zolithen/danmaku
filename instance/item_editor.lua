@@ -67,6 +67,16 @@ local project_slider = dnkSlider(windows.projects, "slider", 300-16, 0, 16, 304)
 local project_list = Stacker(project_panel, "project_list", 0, 0);
 --project_list:calculate_content_height();
 
+--[[local libmono_reg = lg.newFont("assets/ttf/LiberationMono-Regular.ttf", 16);
+local libmono_bold = lg.newFont("assets/ttf/LiberationMono-Bold.ttf", 16);
+local fmt_test = dnkFmtLabel(windows.projects, "fmt", 100, 0);
+fmt_test.font = libmono_reg;
+fmt_test.bold_font = libmono_bold;
+fmt_test:set_text{
+	{color = {1, 1, 0, 1}, bold=true}, "this looks",
+	{color = {1, 1, 1, 1}}, " sad"
+};]]
+
 Project = class("Project");
 function Project:init(name)
 	self.name = name;
@@ -80,10 +90,10 @@ function Project:create_name_edit_window()
 	end);
 
 	self.name_window.bold = dnkField(self.name_window, "bold_button", 0, 20, "Bold", dnkField.type.check);
-	self.name_window.bold = dnkField(self.name_window, "bold_button", 0, 40, "Italic", dnkField.type.check);
-	self.name_window.bold = dnkField(self.name_window, "bold_button", 0, 60, "Strikethrough", dnkField.type.check);
-	self.name_window.bold = dnkField(self.name_window, "bold_button", 0, 80, "Underline", dnkField.type.check);
-	self.name_window.bold = dnkField(self.name_window, "bold_button", 0, 100, "Obfuscated", dnkField.type.check);
+	self.name_window.italic = dnkField(self.name_window, "bold_button", 0, 40, "Italic", dnkField.type.check);
+	self.name_window.strike = dnkField(self.name_window, "bold_button", 0, 60, "Strikethrough", dnkField.type.check);
+	self.name_window.underline = dnkField(self.name_window, "bold_button", 0, 80, "Underline", dnkField.type.check);
+	self.name_window.obfuscated = dnkField(self.name_window, "bold_button", 0, 100, "Obfuscated", dnkField.type.check);
 end
 
 function Project:create_window()
@@ -98,7 +108,7 @@ function Project:create_window()
 			self.name = input.text;
 			self.window:set_title(self.name);
 			self.open_button:set_text(self.name);
-			self.name_window:set_title(self.name .. "'s' Name");
+			self.name_window:set_title(self.name .. " Name");
 		end);
 		self._id = dnkField(self.window, "id_field", 0, 40, "Item ID", dnkField.type.text);
 		self._count = dnkField(self.window, "count_field", 0, 60, "Count", dnkField.type.number);
@@ -142,10 +152,10 @@ function other_update(dt)
 end
 
 function other_draw()
-	lg.setColor(1, 0.5, 0.5, 0.8);
+	--[[lg.setColor(1, 0.5, 0.5, 0.8);
 	lg.print("test", 350, 0);
 	lg.print("test", 350, 0);
 	lg.print("test", 350, 0);
 
-	lg.print("test", 400, 0);
+	lg.print("test", 400, 0);]]
 end

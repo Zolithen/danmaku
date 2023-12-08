@@ -7,20 +7,22 @@ ll = function(path)
 	require(gui.path .. "." .. path);
 end
 
-ll("util")
-ll("element")
+ll("util");
+ll("element");
 
 ll("skin");
 ll("window");
 
 ll("group");
-ll("panel")
+ll("panel");
+ll("canvas");
 ll("clickable");
 ll("text_label")
 ll("text_button");
 ll("text_input");
 ll("slider");
 ll("on_off_button");
+ll("text_label_complex");
 
 ll("field");
 

@@ -30,7 +30,7 @@ function dnkSlider:update(dt)
 			self.last_boxx = self.boxx;
 			self.last_boxy = self.boxy;			
 
-			-- TODO: Make the binding take into account the content height of the panel
+			-- TODO: Put all the code here
 			if self.bound_to then -- Update the displacement of the bound to panel
 				-- TODO: Check if the floor here gives no errors over all and consider putting the floor in the lg.translate in panel&window draw funcs
 
