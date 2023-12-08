@@ -27,7 +27,8 @@ function dnkTextInput:draw()
 			--lg.translate(0, -16)
 
 			lg.setColor(1, 1, 1, 1);
-			lg.draw(self.text_drawable, -self.scroll_w, 0);
+			-- Floor is to not make the text blurry
+			lg.draw(self.text_drawable, math.floor(-self.scroll_w), 0);
 
 			--[[if self.parent.focused and self.focused then
 				--lg.line(self.text_at_cursor:getWidth()-self.scroll_w, 0, self.text_at_cursor:getWidth()-self.scroll_w, self.h);
@@ -117,6 +118,7 @@ end
 
 function dnkTextInput:update_drawable_text()
 	self.update_canvas = true;
+	-- TODO: Instead of remaking the whole text, do Text:add & Text:set
 	self.text_drawable = love.graphics.newText(gui.Skin.font, self.text);
 	if self.cursor_pos == 0 then
 		self.text_at_cursor = love.graphics.newText(gui.Skin.font, "");

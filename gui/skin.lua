@@ -8,6 +8,8 @@ gui.Skin = {
 	bar_light = {0.4, 0.4, 0.7, 1},
 	green = {0, 1, 0, 1},
 	red = {1, 0, 0, 1},
+	eye_green = {0, 0.6, 0, 1},
+	eye_red = {0.6, 0, 0, 1},
 
 	window_border_width = 2,
 	font = love.graphics.newFont("assets/ttf/unifont.otf", 16); -- TODO: Make it so we cache fonts of new sizes from one default font

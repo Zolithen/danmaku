@@ -34,7 +34,6 @@ function dnkSlider:update(dt)
 			if self.bound_to then -- Update the displacement of the bound to panel
 				-- TODO: Check if the floor here gives no errors over all and consider putting the floor in the lg.translate in panel&window draw funcs
 
-				-- TODO: When resizing the content height make the boxh smaller to maintain something idk
 				self.bound_to.transy = math.floor(
 					((math.max(self.bound_to.h, self.bound_to.content_height) - self.bound_to.h) / (self.h - self.boxh)) * -self.boxy
 				)

@@ -9,9 +9,9 @@ end
 function dnkCheckbox:draw()
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if self.on then
-		lg.setColor(gui.Skin.green);
+		lg.setColor(gui.Skin.eye_green);
 	else
-		lg.setColor(gui.Skin.red);
+		lg.setColor(gui.Skin.eye_red);
 	end
 	lg.rectangle("fill", self.x-2, self.y-2, 36, 20);
 	if (self.parent:is_mouse_over() and (self.parent.focused and self.focused)) then

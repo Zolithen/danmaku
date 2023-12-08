@@ -1,18 +1,18 @@
-- Fix dnkGroup content height (update it's box_full or something?)
++- Fix dnkGroup content height (update it's box_full or something?)
+
+- You can click things on the window behind the title bar
+- Put all the binding code for the slider in the slider class
+- Make the slider work with the scroll wheel
+- UTF8 sucks, fix the text inputs randomly crashing
+- If performance is bad we could start caching stuff like get_root calls
+- Ensure if a window is minimized then all the correct events get vwalled
+- Know what to do with the Skin (currently using one global variable gui.Skin, probably not good)
+- Make positioning elements not a pain
+-> Layout system I guess
+
 - GUI Elements:
-	- S
-	- Buttons
 	- Lists
 	- Bigger text fields
-
-- Other stuff:
-	- If performance is bad we could start caching stuff like get_root calls
-	- UTF8 sucks, fix the text inputs randomly crashing
-	- Ensure if a window is minimized then all the correct events get vwalled
-	- Know what to do with the Skin (currently using one global variable gui.Skin, probably not good)
-	- Make positioning elements not a pain
-	-> Layout system I guess
-
 
 -- An immediate parent of an element is always a holder.
 -- If using scroll bars, call calculate_content_height on the panel after adding children for everything to update correctly

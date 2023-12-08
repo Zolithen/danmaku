@@ -22,6 +22,8 @@ ll("text_input");
 ll("slider");
 ll("on_off_button");
 
+ll("field");
+
 function gui:focus_window(index)
 	local window_to_focus = self.children[index];
 	table.remove(self.children, index);

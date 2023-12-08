@@ -19,6 +19,7 @@ function dnkWindow:init(parent, x, y, w, h, skin, id, title)
 	self.movable = true
 	self.expandable = true -- Can the window be resized?
 	self.expanding = false -- Is the window being resized?
+	--self.closable = false; -- Can the window be closed?
 	self.expand_box_size = 16
 	self.dragging = false -- Is the window being dragged by the user?
 	self.bar_height = 16
@@ -172,14 +173,11 @@ function dnkWindow:mousepressed(x, y, b)
 		self.minim = not self.minim;
 	end
 
-	if not self.focused then -- We check first if its not focused so that if we click on an unfocused window we actually process stuff instead of having to click again
+	-- We check first if its not focused so that if we click on an unfocused window we actually process stuff instead of having to click again
+	if (not self.focused) and not (self.minim and math.point_in_box(mx, my, self:box_main()))  then 
 		if b == 1 then
 			self.parent:focus_window(self.child_index);
 		end
-	end
-
-	if self.minim then
-		return NodeResponse.vwall;
 	end
 
 	local must_update = false;
@@ -191,7 +189,11 @@ function dnkWindow:mousepressed(x, y, b)
 				self.dox = x - self.x; -- TODO: This may be a bit funky if we have multiple coordinate systems
 				self.doy = y - self.y;
 			end
-			if self.minim then return self.focused end;
+
+			if self.minim then
+				return NodeResponse.stop;
+			end
+
 			-- Resizing the window
 			if math.point_in_box(mx, my, self:box_expand()) and self.expandable then
 				self.expanding = true;
@@ -203,6 +205,10 @@ function dnkWindow:mousepressed(x, y, b)
 		end
 
 		--self.panel:mousepressed(x, y, b);
+	end
+
+	if self.minim then
+		return NodeResponse.stop;
 	end
 
 	if self.focused then
