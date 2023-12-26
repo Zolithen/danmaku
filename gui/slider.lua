@@ -21,6 +21,7 @@ function dnkSlider:init(parent, name, x, y, w, h)
 end
 
 function dnkSlider:update(dt)
+	dnkElement.update(self, dt);
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if self.focused then
 		self.boxx = math.clamp(mx + self.dox, 0, self.w-self.boxw);
@@ -39,6 +40,10 @@ function dnkSlider:update(dt)
 				)
 			end
 		end
+	end
+
+	if self.bound_to then
+		self:state_from_bound()
 	end
 end
 
@@ -79,8 +84,42 @@ end
 -- Binds the slider to a panel so that it scrolls down with the slider
 function dnkSlider:bind(p)
 	self.bound_to = p;
+	if not p.instanceOf then
+		error("Trying to bind non 30log object to slider.");
+	else
+		if not p:instanceOf(dnkPanel) then
+			error("Trying to bind non dnkPanel to slider.");
+		end
+	end
 
 	return self;
+end
+
+function dnkSlider:rebind(p)
+	self.bound_to = p;
+	if not p.instanceOf then
+		error("Trying to bind non 30log object to slider.");
+	else
+		if not p:instanceOf(dnkPanel) then
+			error("Trying to bind non dnkPanel to slider.");
+		end
+	end
+	self:state_from_bound();
+
+	return self;
+end
+
+function dnkSlider:state_from_bound()
+	local newh_c = math.max(self.bound_to.h + 1, self.bound_to.content_height);
+	local y_p = -self.bound_to.transy;
+	local y_b = math.max(self.boxy, 0.1);
+	local h_p = self.bound_to.h;
+	local h_s = self.h;
+	local h_b = self.boxh;
+	local h_c = (y_p / y_b) * (h_s - h_b) + h_p;
+	local newh_b = h_s * (h_p / newh_c)
+	self.boxh = newh_b;
+	self.boxy = math.max(1, ((h_s - newh_b) * (h_c - h_p)) / ((newh_c - h_p) * (h_s - h_b)) * y_b);
 end
 
 function dnkSlider:box_full()

@@ -9,6 +9,10 @@ function dnkElement:init(parent, name, x, y)
 	self.content_height = 0;
 end
 
+function dnkElement:update(dt)
+	
+end
+
 function dnkElement:connect(name, func)
 	self.events[name] = func;
 	return self;

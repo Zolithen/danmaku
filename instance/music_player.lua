@@ -7,6 +7,7 @@ local slider = dnkSlider(main, "slider", lg.getWidth()-16, 0, 16, lg.getHeight()
 slider.boxw = 16;
 slider.boxh = 24;
 local panel = dnkPanel(main, "panel", 0, 0, lg.getWidth()-16, lg.getHeight()-32);
+slider:bind(panel);
 panel.border = false;
 bar = {};
 
@@ -29,6 +30,9 @@ dnkButton(dir_bar, "back", lg.getWidth()-64, 0, "<-"):connect("press", function(
 	if current_layouter.file_node.parent then
 		current_layouter:remove_from_parent();
 		panel:add(current_layouter.file_node.parent.layouter);
+		panel:calculate_content_height();
+		panel.transy = 0;
+		slider:state_from_bound();
 	end
 end)
 
@@ -37,7 +41,7 @@ local current_song = {
 	path = ""
 };
 
-WideLayouter = dnkElement:extend("WideLayouter");
+WideLayouter = dnkGroup:extend("WideLayouter");
 
 function WideLayouter:init(parent, name)
 	WideLayouter.super.init(self, parent, name, 0, 0);
@@ -90,6 +94,9 @@ function FileNode:init(parent, name, path)
 				local current_layouter = panel:find_name("master_layouter");
 				current_layouter:remove_from_parent();
 				panel:add(file_node.layouter);
+				panel:calculate_content_height();
+				panel.transy = 0;
+				slider:state_from_bound();
 			else -- We selected music
 				if current_song.song ~= nil then
 					current_song.song:stop();
@@ -103,6 +110,7 @@ function FileNode:init(parent, name, path)
 		end);
 		dnkLabel(g, "label", 0, 0, v);
 	end
+	self.layouter:calculate_content_height();
 end
 
 local master_directory = FileNode(nil, "", "songs");
@@ -115,8 +123,8 @@ local songs = love.filesystem.getDirectoryItems("songs")
 end]]
 
 function other_update(dt)
-	panel.transx = slider.boxx;
-	panel.transy = -slider.boxy;
+	--panel.transx = slider.boxx;
+	--panel.transy = -slider.boxy;
 end
 
 function other_draw()
@@ -142,7 +150,8 @@ function other_resize()
 	slider.x = lg.getWidth()-16;
 	slider.h = lg.getHeight()-16;
 
-	slider.boxy = math.clamp(slider.boxy, 0, slider.h - slider.boxh);
+	--slider.boxy = math.clamp(slider.boxy, 0, slider.h - slider.boxh);
+	slider:state_from_bound();
 
 	dir_bar_rect.w = lg.getWidth()-16;
 	dir_bar.y = lg.getHeight()-32;

@@ -84,7 +84,7 @@ function Project:init(name)
 end
 
 function Project:create_name_edit_window()
-	self.name_window = dnkWindow(nil, 0, 0, 300, 300, gui.Skin, "project_" .. self.name .. "_name_editor", self.name .. "'s' Name");
+	self.name_window = dnkWindow(nil, 0, 0, 300, 300, gui.Skin, "project_" .. self.name .. "_name_editor", self.name .. " Name");
 	dnkButton(self.name_window, "close_button", 0, 0, "Hide window"):connect("press", function(button)
 		self.name_window:remove_from_parent();
 	end);
@@ -138,17 +138,7 @@ dnkButton(windows.projects, "new_project", 0, 300-16, "New Project"):connect("pr
 end);
 
 function other_update(dt)
-	-- What did he mean by this
-	local newh_c = math.max(project_panel.h + 1, project_list.content_height);
-	local y_p = -project_panel.transy;
-	local y_b = math.max(project_slider.boxy, 0.1);
-	local h_p = project_panel.h;
-	local h_s = project_slider.h;
-	local h_b = project_slider.boxh;
-	local h_c = (y_p / y_b) * (h_s - h_b) + h_p;
-	local newh_b = h_s * (h_p / newh_c)
-	project_slider.boxh = newh_b;
-	project_slider.boxy = math.max(1, ((h_s - newh_b) * (h_c - h_p)) / ((newh_c - h_p) * (h_s - h_b)) * y_b);
+	
 end
 
 function other_draw()

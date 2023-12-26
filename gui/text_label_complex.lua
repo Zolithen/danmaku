@@ -16,6 +16,10 @@ function dnkFmtLabel:draw()
 	end
 end
 
+--[[
+	Accepts a table with the format
+	{format1, string1, format2, string2, ...}
+]]
 function dnkFmtLabel:set_text(text_table)
 	if (#text_table % 2 == 1) or (text_table == nil) then
 		error("Provided text_table doesn't have valid size");

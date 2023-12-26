@@ -13,6 +13,7 @@ function dnkGroup:draw_after_children()
 end
 
 function dnkGroup:update() -- TODO: Change all occurences of parent.focused to holder.focused or some bullshit
+	dnkElement.update(self, dt);
 	self.focused = self.parent.focused;
 end
 

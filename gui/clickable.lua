@@ -9,6 +9,7 @@ function dnkClickableArea:init(parent, name, x, y, w, h)
 end
 
 function dnkClickableArea:update(dt)
+	dnkElement.update(self, dt);
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if self.focused then
 		if not math.point_in_box(mx, my, self:box_full()) then

@@ -21,6 +21,7 @@ function dnkPanel:resize(new_w, new_h)
 end
 
 function dnkPanel:update(dt)
+	dnkElement.update(self, dt);
 	self.focused = self.parent.focused;
 end
 

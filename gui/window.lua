@@ -169,6 +169,10 @@ function dnkWindow:mousepressed(x, y, b)
 		return;
 	end
 
+	if self.minim and math.point_in_box(mx, my, self:box_main()) then
+		return NodeResponse.vwall;
+	end
+
 	if (self.minimizable and b == 1 and math.point_in_box(mx, my, self:box_minimize())) then
 		self.minim = not self.minim;
 	end
