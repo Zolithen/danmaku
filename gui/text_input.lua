@@ -131,6 +131,12 @@ function dnkTextInput:update_drawable_text()
 	self.scroll_w = math.max(0, self.text_at_cursor:getWidth() - 3*self.w/4);
 end
 
+function dnkTextInput:set_text(t)
+	self.cursor_pos = string.len(t);
+	self.text = t;
+	self:update_drawable_text();
+end
+
 function dnkTextInput:box_full()
 	return 0, 0, self.w, self.h
 end

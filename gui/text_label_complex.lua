@@ -6,7 +6,7 @@ function dnkFmtLabel:init(parent, name, x, y)
 	self.textures = {}
 	self.text_w = 0;
 	self.font = gui.Skin.font;
-	self.bold_font = gui.Skin.font;
+	self.bold_font = gui.Skin.test_font;
 end
 
 function dnkFmtLabel:draw()
@@ -49,7 +49,11 @@ function dnkFmtLabel:set_text(text_table)
 		i = i + 2;
 	end
 	if self.canvas then self.canvas:release() end
-	self.canvas = lg.newCanvas(text_w, 16);
+	if text_w >= 1 then
+		self.canvas = lg.newCanvas(text_w, 16);
+	else
+		self.canvas = lg.newCanvas(1, 16);
+	end
 	lg.setCanvas(self.canvas);
 	local acum_w = 0;
 	for i, v in ipairs(self.textures) do
@@ -61,6 +65,7 @@ function dnkFmtLabel:set_text(text_table)
 	lg.setCanvas();
 
 	self.w = text_w;
+	return self;
 end
 
 function dnkFmtLabel:box_full()

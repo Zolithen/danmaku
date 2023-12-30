@@ -38,8 +38,8 @@ end
 
 function dnkCheckbox:mousereleased(x, y, b)
 	if self.focused then
-		self:call("press");
 		self.on = not self.on;
+		self:call("press");
 	end
 	self.focused = false;
 end

@@ -25,3 +25,8 @@ function dnkField:set_text(t)
 	self.label:set_text(t);
 	self.input.x = self.label.texture:getWidth()+4;
 end
+
+function dnkField:connect(name, func)
+	self.input.events[name] = func;
+	return self;
+end

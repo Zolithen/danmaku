@@ -12,5 +12,6 @@ gui.Skin = {
 	eye_red = {0.6, 0, 0, 1},
 
 	window_border_width = 2,
-	font = love.graphics.newFont("assets/ttf/unifont.otf", 16); -- TODO: Make it so we cache fonts of new sizes from one default font
+	font = love.graphics.newFont("assets/ttf/unifont.otf", 16), -- TODO: Make it so we cache fonts of new sizes from one default font
+	test_font = love.graphics.newFont("assets/ttf/LiberationMono-Bold.ttf", 16);
 }

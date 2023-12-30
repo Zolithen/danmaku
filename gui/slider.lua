@@ -29,7 +29,7 @@ function dnkSlider:update(dt)
 
 		if self.last_boxx ~= self.boxx or self.last_boxy ~= self.boxy then
 			self.last_boxx = self.boxx;
-			self.last_boxy = self.boxy;			
+			self.last_boxy = self.boxy;
 
 			-- TODO: Put all the code here
 			if self.bound_to then -- Update the displacement of the bound to panel

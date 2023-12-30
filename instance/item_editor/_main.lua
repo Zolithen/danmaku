@@ -10,6 +10,9 @@ function Stacker:on_add_children(child)
 	self.current = self.current + 1;
 end
 
+require "instance/item_editor/name_window"
+require "instance/item_editor/color_picker"
+
 local projects = {};
 
 local enchantments = {
@@ -65,6 +68,7 @@ windows.projects.expandable = false;
 local project_panel = dnkPanel(windows.projects, "panel", 0, 0, 300, 300-16)
 local project_slider = dnkSlider(windows.projects, "slider", 300-16, 0, 16, 304):bind(project_panel);
 local project_list = Stacker(project_panel, "project_list", 0, 0);
+
 --project_list:calculate_content_height();
 
 --[[local libmono_reg = lg.newFont("assets/ttf/LiberationMono-Regular.ttf", 16);
@@ -84,16 +88,7 @@ function Project:init(name)
 end
 
 function Project:create_name_edit_window()
-	self.name_window = dnkWindow(nil, 0, 0, 300, 300, gui.Skin, "project_" .. self.name .. "_name_editor", self.name .. " Name");
-	dnkButton(self.name_window, "close_button", 0, 0, "Hide window"):connect("press", function(button)
-		self.name_window:remove_from_parent();
-	end);
-
-	self.name_window.bold = dnkField(self.name_window, "bold_button", 0, 20, "Bold", dnkField.type.check);
-	self.name_window.italic = dnkField(self.name_window, "bold_button", 0, 40, "Italic", dnkField.type.check);
-	self.name_window.strike = dnkField(self.name_window, "bold_button", 0, 60, "Strikethrough", dnkField.type.check);
-	self.name_window.underline = dnkField(self.name_window, "bold_button", 0, 80, "Underline", dnkField.type.check);
-	self.name_window.obfuscated = dnkField(self.name_window, "bold_button", 0, 100, "Obfuscated", dnkField.type.check);
+	self.name_window = WindowTCEdit(nil, 0, 0, 300, 300, gui.Skin, "project_" .. self.name .. "_name_editor", self.name .. " Name");
 end
 
 function Project:create_window()
