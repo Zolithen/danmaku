@@ -10,10 +10,11 @@
 - Make positioning elements not a pain
 -> Layout system I guess
 
-- GUI Elements:
+- GUI Elements & Stuff:
 	- Lists
 	- Bigger text fields
-	- Do scenes or something to change & update stuff easily
+	- Serializers
+	- Do scenes or something to change & update stuff easily -> Layouters
 
 -- An immediate parent of an element is always a holder.
 -- If using scroll bars, call calculate_content_height on the panel after adding children for everything to update correctly

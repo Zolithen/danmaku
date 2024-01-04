@@ -13,14 +13,23 @@ function dnkElement:update(dt)
 	
 end
 
+-- TODO: Make it so if we connect to an unknown event name an error is thrown
+-- TODO: Add support for multiple connects to an event
 function dnkElement:connect(name, func)
-	self.events[name] = func;
-	return self;
+	if self.events[name] then
+		table.insert(self.events[name], func)
+		return self;
+	else
+		self.events[name] = {func};
+		return self;
+	end
 end
 
 function dnkElement:call(name, ...)
 	if self.events[name] then
-		self.events[name](self, ...);
+		for i, v in ipairs(self.events[name]) do
+			v(self, ...);
+		end
 	end
 end
 
@@ -84,6 +93,7 @@ function dnkElement:set_y(y)
 end
 
 -- Calculates the height of all the content in the window. Used for scrolling n stuff
+-- TODO: Content height of alone elements?
 function dnkElement:calculate_content_height()
 	local maxy, _x, _y, _w, _h = 0, 0, 0, 0, 0;
 

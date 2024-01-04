@@ -10,6 +10,15 @@ end
 function dnkCanvas:draw()
 	lg.setColor(1, 1, 1, 1);
 	lg.draw(self.canvas, self.x, self.y);
+	if self.canvas_draw then
+		lg.push("all");
+		lg.setCanvas(self.canvas);
+			lg.origin();
+			lg.setColor(1, 1, 1, 1);
+			self:canvas_draw();
+		lg.setCanvas();
+		lg.pop();
+	end
 end
 
 -- This function wipes the canvas blank!

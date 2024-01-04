@@ -1,5 +1,7 @@
 dnkSlider = dnkElement:extend("dnkSlider")
 
+-- TODO: go_to_click doesn't move the slider correctly: it should move the center of the box the mouse pointer
+-- It also shouldn't update the position if you click inside the sliding box
 function dnkSlider:init(parent, name, x, y, w, h)
 	dnkSlider.super.init(self, parent, name, x, y, w, h);
 	self.w = math.max(16, w);
@@ -14,12 +16,13 @@ function dnkSlider:init(parent, name, x, y, w, h)
 	self.last_boxy = 0;
 
 	self.focused = false; -- Focused here is the same as dragging
+	self.go_to_click = false; -- True if clicking in the slider should make the sliding box go instantly there
 	self.dox = 0;
 	self.doy = 0;
 
 	return self;
 end
-
+	
 function dnkSlider:update(dt)
 	dnkElement.update(self, dt);
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
@@ -30,6 +33,7 @@ function dnkSlider:update(dt)
 		if self.last_boxx ~= self.boxx or self.last_boxy ~= self.boxy then
 			self.last_boxx = self.boxx;
 			self.last_boxy = self.boxy;
+			self:call("moved");
 
 			-- TODO: Put all the code here
 			if self.bound_to then -- Update the displacement of the bound to panel
@@ -63,14 +67,22 @@ end
 
 function dnkSlider:mousepressed(x, y, b)
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
-	if (b == 1 and self:get_root_(1).focused and math.point_in_box(mx, my, self:box_slider())) then
-		self.focused = true;
+	if (b == 1 and self:get_root_(1).focused) then
+		if self.go_to_click and math.point_in_box(mx, my, self:box_full()) then
+			self.boxx = mx;
+			self.boxy = my;
 
-		self.dox = self.boxx - mx;
-		self.doy = self.boxy - my;
+			self:call("moved");
+		end
+		if math.point_in_box(mx, my, self:box_slider()) then
+			self.focused = true;
 
-		self.last_boxx = self.boxx;
-		self.last_boxy = self.boxy;
+			self.dox = self.boxx - mx;
+			self.doy = self.boxy - my;
+
+			self.last_boxx = self.boxx;
+			self.last_boxy = self.boxy;
+		end
 	end
 end
 
@@ -120,6 +132,12 @@ function dnkSlider:state_from_bound()
 	local newh_b = h_s * (h_p / newh_c)
 	self.boxh = newh_b;
 	self.boxy = math.max(1, ((h_s - newh_b) * (h_c - h_p)) / ((newh_c - h_p) * (h_s - h_b)) * y_b);
+end
+
+function dnkSlider:instant_move(x, y)
+	self.boxx = math.clamp(x, 0, self.w-self.boxw);
+	self.boxy = math.clamp(y, 0, self.h-self.boxh);
+	self:call("move");
 end
 
 function dnkSlider:box_full()

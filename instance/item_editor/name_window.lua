@@ -1,7 +1,7 @@
 WindowTCEdit = dnkWindow:extend("WindowTCEdit");
 
-function WindowTCEdit:init(parent, x, y, w, h, skin, id, title)
-	WindowTCEdit.super.init(self, parent, x, y, w, h, skin, id, title);
+function WindowTCEdit:init(parent, x, y, skin, id, title)
+	WindowTCEdit.super.init(self, parent, x, y, 200, 500, skin, id, title);
 
 	dnkButton(self, "close_button", 0, 0, "Hide window"):connect("press", function(button)
 		self:remove_from_parent();
@@ -9,7 +9,7 @@ function WindowTCEdit:init(parent, x, y, w, h, skin, id, title)
 
 	self.main_input = dnkTextInput(self, "main_input", 0, 120, 100, 16):connect("update_text", function(inp)
 		self.section_data[self.cur_sec*2] = inp.text;
-		self:update_display();		
+		self:update_display();
 	end);
 
 	dnkButton(self, "new_section", 30, 140, "New section"):connect("press", function(button)
@@ -24,16 +24,20 @@ function WindowTCEdit:init(parent, x, y, w, h, skin, id, title)
 		self:change_current_section();
 	end)
 
-	dnkColorPicker(self, "color_picker", 0, 200, 100, 100);
+	self.color_picker = dnkColorPicker(self, "color_picker", 0, 200, 200, 200):connect("color_change", function(picker)
+		local r, g, b = picker:picked_color();
+		self.section_data[2*self.cur_sec - 1].color = {r, g, b, 1};
+		self:update_display();
+	end);
 
 	self.section_label = dnkLabel(self, "section_label", 0, 160, "1/1");
 	self.display_label = dnkFmtLabel(self, "display_label", 0, 180);
 
-	self.bold = dnkField(self, "bold", 0, 20, "Bold", dnkField.type.check):connect("press", self:_modify_cur_sec());
-	self.italic = dnkField(self, "italic", 0, 40, "Italic", dnkField.type.check):connect("press", self:_modify_cur_sec());
-	self.strike = dnkField(self, "strike", 0, 60, "Strikethrough", dnkField.type.check):connect("press", self:_modify_cur_sec());
-	self.underline = dnkField(self, "underline", 0, 80, "Underline", dnkField.type.check):connect("press", self:_modify_cur_sec());
-	self.obfuscated = dnkField(self, "obfuscated", 0, 100, "Obfuscated", dnkField.type.check):connect("press", self:_modify_cur_sec());
+	self.bold = dnkField(self, "bold", 0, 20, "Bold", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
+	self.italic = dnkField(self, "italic", 0, 40, "Italic", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
+	self.strike = dnkField(self, "strike", 0, 60, "Strikethrough", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
+	self.underline = dnkField(self, "underline", 0, 80, "Underline", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
+	self.obfuscated = dnkField(self, "obfuscated", 0, 100, "Obfuscated", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
 
 	self.cur_sec = 1;
 	self.max_sec = 0;
@@ -56,7 +60,7 @@ function WindowTCEdit:new_section()
 	self.section_label:set_text(self.cur_sec .. "/" .. self.max_sec);
 end
 
-function WindowTCEdit:_modify_cur_sec()
+function WindowTCEdit:_switch_modify_cur_sec()
 	return function(c)
 		self.section_data[2*self.cur_sec - 1][c.parent.name] = c.on;
 		self:update_display();
@@ -69,6 +73,8 @@ end
 
 -- This function just updates the text input & switches correctly
 function WindowTCEdit:change_current_section()
+	local color = self.section_data[self.cur_sec*2 - 1].color;
+	self.color_picker:set_color(color[1], color[2], color[3]);
 	self.main_input:set_text(self.section_data[self.cur_sec*2]);
 	self.bold.input.on = self.section_data[self.cur_sec*2 - 1].bold;
 	self.italic.input.on = self.section_data[self.cur_sec*2 - 1].italic;

@@ -1,6 +1,7 @@
 -- TODO: Test please
 dnkTextInput = dnkElement:extend("dnkTextInput");
 
+-- TODO: Make an option to only input numbers
 function dnkTextInput:init(parent, name, x, y, w, h)
 	dnkTextInput.super.init(self, parent, name, x, y);
 	self.w = w;

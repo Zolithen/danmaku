@@ -163,10 +163,11 @@ function dnkWindow:mousemoved(x, y, dx, dy)
 	end
 end
 
+-- TODO: Ensure absolutely every GUI element that uses mousepresses doesn't get called when clicking outside the window.
 function dnkWindow:mousepressed(x, y, b)
 	local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
 	if not math.point_in_box(mx, my, self:box_full()) then
-		return;
+		return NodeResponse.vwall;
 	end
 
 	if self.minim and math.point_in_box(mx, my, self:box_main()) then

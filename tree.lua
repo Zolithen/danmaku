@@ -53,7 +53,7 @@ NodeResponse = {
 	vwall = 3 -- Stops propagating the event to the children of the current node, but not to the children of the parent node
 }
 
-Node.children = {};
+Node.children = {}; -- This is so funny to me
 
 -- Generates an UUID
 -- & : String - > An UUID

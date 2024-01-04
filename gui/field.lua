@@ -27,6 +27,6 @@ function dnkField:set_text(t)
 end
 
 function dnkField:connect(name, func)
-	self.input.events[name] = func;
+	self.input:connect(name, func);
 	return self;
 end

@@ -44,6 +44,10 @@ function love.draw()
 	if other_draw then
 		other_draw();
 	end
+
+	if true then
+		
+	end
 end
 
 function love.mousemoved(x, y, dx, dy)
