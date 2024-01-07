@@ -28,6 +28,7 @@ end
 
 function love.update(dt)
 	gui:propagate_event("update", dt);
+	floatgui:propagate_event("update", dt);
 
 	if other_update then
 		other_update(dt);
@@ -36,6 +37,7 @@ end
 
 function love.draw()
 	gui:propagate_event("draw");
+	floatgui:propagate_event("draw");
 	lg.setColor(1, 1, 1, 1);
 
 	lg.setColor(1, 0, 0, 1);
@@ -60,18 +62,35 @@ end
 
 function love.mousemoved(x, y, dx, dy)
 	gui:propagate_event_reverse("mousemoved", x, y, dy, dx);
+	floatgui:propagate_event_reverse("mousemoved", x, y, dy, dx);
 end
 
 function love.mousereleased(x, y, b)
 	gui:propagate_event_reverse("mousereleased", x, y, b);
+	floatgui:propagate_event_reverse("mousereleased", x, y, b);
 end
 
 function love.mousepressed(x, y, b)
+	floatgui.pressed = false;
+	floatgui:propagate_event_reverse("mousepressed", x, y, b);
+	if floatgui.pressed == false or #floatgui.children == 0 then -- TODO: Add a keybind to unfloat the gui
+		gui:unfloat();
+	end
 	gui:propagate_event_reverse("mousepressed", x, y, b);
+end
+
+function love.wheelmoved(dx, dy)
+	gui:propagate_event_reverse("wheelmoved", dx, dy);
+	floatgui:propagate_event_reverse("wheelmoved", dx, dy);
 end
 
 function love.keypressed(key, scancode, is_repeat)
 	gui:propagate_event_reverse("keypressed", key, scancode, is_repeat);
+	floatgui:propagate_event_reverse("keypressed", key, scancode, is_repeat);
+
+	if other_keypressed then
+		other_keypressed(key, scancode, is_repeat);
+	end
 	--[[if key == "f4" then
 		local gui_instance = loadstring(get_file("instance/item_editor.lua"))
 		gui_instance(winc);
@@ -80,10 +99,12 @@ end
 
 function love.textinput(t)
 	gui:propagate_event_reverse("textinput", t);
+	floatgui:propagate_event_reverse("textinput", t);
 end
 
 function love.resize()
 	gui:propagate_event_reverse("love_resize_window");
+	floatgui:propagate_event_reverse("love_resize_window");
 	if other_resize then
 		other_resize();
 	end

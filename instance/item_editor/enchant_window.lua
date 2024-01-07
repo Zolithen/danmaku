@@ -1,8 +1,9 @@
 WindowECEdit = dnkWindow:extend("WindowECEdit");
 
 function WindowECEdit:init(parent, x, y, skin, id, title, enchants)
-	WindowECEdit.super.init(self, parent, x, y, 250, 500, skin, id, title);
+	WindowECEdit.super.init(self, parent, x, y, 600, 550, skin, id, title);
 	self.enchants = enchants;
+	self.expandable = false;
 
 	dnkButton(self, "close_button", 0, 2, "Hide window"):connect("press", function(button)
 		self:remove_from_parent();

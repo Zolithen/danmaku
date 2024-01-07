@@ -85,9 +85,8 @@ table.sort(enchantments)
 auxgui = Node(nil, "auxgui", 0, 0);
 local windows = {p = {}}
 windows.projects = dnkWindow(gui, 0, 0, 300, 304, gui.Skin, "projects", "Projects");
-windows.color = dnkWindow(gui, 400, 0, 300, 300, gui.Skin, "color", "Colors");
+windows.color = ColorWindow(gui, 400, 0, 300, 300, gui.Skin, "color", "Colors");
 windows.projects.expandable = false;
-windows.color.expandable = false;
 
 local project_panel = dnkPanel(windows.projects, "panel", 0, 0, 300, 300-16)
 local project_slider = dnkSlider(windows.projects, "slider", 300-16, 0, 16, 304):bind(project_panel);
@@ -162,8 +161,15 @@ dnkButton(windows.projects, "new_project", 0, 300-16, "New Project"):connect("pr
 	project_panel:calculate_content_height();
 end);
 
+dnkFloatingList(windows.color, "list", 200, 0, "testt");
+--[[local tlt = dnkTooltip(floatgui, "test", 200, 200, 150, 128);
+dnkLabel(tlt, "label", 0, 0, "This is a tooltip");]]
+
 function other_update(dt)
-	
+end
+
+function other_keypressed(key)
+
 end
 
 function other_draw()

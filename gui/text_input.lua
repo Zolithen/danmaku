@@ -66,6 +66,7 @@ function dnkTextInput:mousepressed(x, y, b)
 		end
 	elseif self.focused == true then -- TODO: Do we need b == 1 here?
 		self.focused = false;
+		self:call("finish_text"); -- TODO: Test
 		if ANDROID then
 			love.keyboard.setTextInput(false);
 		end

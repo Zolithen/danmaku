@@ -8,6 +8,15 @@ function dnkLabel:init(parent, name, x, y, text)
 	return self
 end
 
+function dnkLabel:update(dt)
+	-- TODO: Do we need a hover on a label? May be a bit expensive with lots of labels
+	--[[dnkElement.update(self, dt)
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
+	if math.point_in_box(mx, my, self:box_full()) then
+		self:call("hover");
+	end]]
+end
+
 function dnkLabel:draw()
 	lg.setColor(1, 1, 1, 1);
 	lg.draw(self.texture, self.x, self.y);

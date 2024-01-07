@@ -23,14 +23,12 @@ function dnkWindow:init(parent, x, y, w, h, skin, id, title)
 	self.expand_box_size = 16
 	self.dragging = false -- Is the window being dragged by the user?
 	self.bar_height = 16
+
+	self.highlight_time = 0;
 		
 	-- Used for dragging the window around and expanding
 	self.dox = 0
 	self.doy = 0
-		
-	-- Window scroll
-	self.transx = 0
-	self.transy = 0
 
 	-- Scrollbar parameters
 	self.maxw = 0
@@ -67,9 +65,9 @@ function dnkWindow:draw()
 	local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
 	-- Draw the window border
 	if self.focused then
-		lg.setColor(gui.Skin.green);
+		lg.setColor(self:highlight_color(gui.Skin.green));
 	else
-		lg.setColor(gui.Skin.red);
+		lg.setColor(self:highlight_color(gui.Skin.red));
 	end
 	local bw = gui.Skin.window_border_width;
 	if self.minim then
@@ -150,6 +148,8 @@ function dnkWindow:update(dt)
 	end
 
 	if self.minim then return end;
+
+	self.highlight_time = math.max(0, self.highlight_time - dt);
 end
 
 function dnkWindow:mousemoved(x, y, dx, dy)
@@ -250,7 +250,7 @@ end
 -- Turns the given vector into the window's content's CS
 function dnkWindow:transform_vector(x, y)
 	local nx, ny = dnkWindow.super.transform_vector(self, x, y);
-	return nx - self.transx, ny + self.transy - self.bar_height;
+	return nx, ny - self.bar_height;
 end
 
 -- Turns the given vector into the window's CS
@@ -298,4 +298,15 @@ function dnkWindow:box_minimize()
 		   0,
 		   self.bar_height,
 		   self.bar_height
+end
+
+-- TODO: Finish & Optimize
+function dnkWindow:highlight(secs)
+	self.highlight_time = self.highlight_time + secs;
+end
+
+function dnkWindow:highlight_color(col)
+	local r, g, b, a = col[1], col[2], col[3], col[4];
+	local mod = math.min(1, self.highlight_time)*math.abs(math.sin(self.highlight_time*4));
+	return r+1*mod, g+0.94*mod, b, a; 
 end
