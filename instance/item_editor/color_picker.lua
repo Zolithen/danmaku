@@ -65,6 +65,10 @@ function dnkColorPicker:init(parent, name, x, y, w, h)
 		self.value_slider:update_color(self.boxx/self.w, self.boxy/self.h);
 		self:call("color_change");
 	end)
+
+	self.fields = {
+		r = dnkField(self, "rfield", self.h+30, 0, "R", dnkField.type.number)
+	}
 end
 
 function dnkColorPicker:draw()

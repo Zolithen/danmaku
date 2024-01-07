@@ -7,6 +7,9 @@ ANDROID = gui.android
 
 require "datadump"
 
+--[[local test_font = love.graphics.newImageFont("assets/ttf/test.png", "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_ ")
+test_font:setFilter("nearest", "nearest");]]
+
 function love.load(args)
 	love.keyboard.setKeyRepeat(true);
 	lg.setLineStyle("rough");
@@ -46,7 +49,12 @@ function love.draw()
 	end
 
 	if true then
-		
+		--[[lg.scale(4, 4)
+		lg.setColor(1, 1, 1, 1);
+		lg.setFont(test_font);
+		lg.print("MIRACLE OF SNOWDAGGER");
+		lg.setFont(gui.Skin.font);
+		lg.scale(1/4, 1/4);]]
 	end
 end
 

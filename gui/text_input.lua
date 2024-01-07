@@ -20,7 +20,8 @@ end
 
 function dnkTextInput:draw()
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
-	if self.update_canvas then -- If we updated the canvas every frame we would get high GPU usage
+	-- TODO: We don't need to update the canvas on draw. We can just do it immediately when we need updating
+	if self.update_canvas then -- If we updated the canvas every frame we would get high GPU usage with lots of text inputs
 		lg.push("all");
 		lg.origin();
 		lg.setCanvas(self.canvas);

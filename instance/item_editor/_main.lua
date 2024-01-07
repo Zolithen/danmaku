@@ -32,6 +32,7 @@ end
 require "instance/item_editor/name_window"
 require "instance/item_editor/enchant_window"
 require "instance/item_editor/color_picker"
+require "instance/item_editor/color_window"
 
 local projects = {};
 
@@ -81,9 +82,12 @@ local projects = {}
 
 table.sort(enchantments)
 
+auxgui = Node(nil, "auxgui", 0, 0);
 local windows = {p = {}}
 windows.projects = dnkWindow(gui, 0, 0, 300, 304, gui.Skin, "projects", "Projects");
+windows.color = dnkWindow(gui, 400, 0, 300, 300, gui.Skin, "color", "Colors");
 windows.projects.expandable = false;
+windows.color.expandable = false;
 
 local project_panel = dnkPanel(windows.projects, "panel", 0, 0, 300, 300-16)
 local project_slider = dnkSlider(windows.projects, "slider", 300-16, 0, 16, 304):bind(project_panel);
