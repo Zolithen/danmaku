@@ -5,6 +5,7 @@
 
 local ValueSlider = dnkSlider:extend("ValueSlider");
 local ColorSlider = dnkSlider:extend("ColorSlider");
+ColorComponent = dnkClickableArea:extend("ColorComponent");
 dnkColorPicker = dnkGroup:extend("dnkColorPicker");
 
 function ValueSlider:init(parent, name, x, y, w, h, start_h, start_s)
@@ -140,4 +141,50 @@ function dnkColorPicker:set_color(r, g, b)
 	self.value_slider.boxx = v*self.value_slider.w;
 
 	self.value_slider:update_color(h, s);
+	self:call("color_change"); -- TODO: Is this a good idea to put here? If we change the color in a color change call this would get called, which is bad
+end
+
+function dnkColorPicker:_set_color(r, g, b)
+	r, g, b = math.clamp(r, 0, 1), math.clamp(g, 0, 1), math.clamp(b, 0, 1);
+	local h, s, v = math.rgb2hsv(r, g, b, 1);
+	self.color_slider.boxx = h*self.color_slider.w;
+	self.color_slider.boxy = s*self.color_slider.h;
+	self.value_slider.boxx = v*self.value_slider.w;
+
+	self.value_slider:update_color(h, s);
+	self:call("color_change");
+end
+
+
+function ColorComponent:init(parent, name, x, y)
+	ColorComponent.super.init(self, parent, name, x, y, 32, 32);
+
+	self.bound = false;
+	self.color = {1, 1, 1, 1};
+	self.color_window = gui:find_name_in_children("color"); -- TODO: This assumes the color window is always open. FIXME
+	self:connect("press", function(self)
+		self.color_window:bind_to_component(self);
+	end);
+end
+
+function ColorComponent:draw()
+	ColorComponent.super.draw(self);
+	lg.setColor(self.color);
+	lg.rectangle("fill", self.x, self.y, self.w, self.h);
+end
+
+function ColorComponent:window_close()
+	if self.bound then
+		self.color_window:component_is_gone();
+	end
+end
+
+function ColorComponent:set_color(r, g, b)
+	self.color[1] = r;
+	self.color[2] = g;
+	self.color[3] = b;
+
+	if self.bound then
+		self.color_window.color_picker:set_color(r, g, b);
+	end
 end

@@ -5,7 +5,10 @@
 - Make the slider work with the scroll wheel
 - UTF8 sucks, fix the text inputs randomly crashing
 - If performance is bad we could start caching stuff like get_root calls
+-> Main performance concern is going to be the GPU though
 - Ensure if a window is minimized then all the correct events get vwalled
+- Add some reliable stuff for closing & hiding windows
+- Do we need to do type checks?
 - Know what to do with the Skin (currently using one global variable gui.Skin, probably not good)
 - Make positioning elements not a pain
 -> Layout system I guess

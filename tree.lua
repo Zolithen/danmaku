@@ -53,6 +53,11 @@ NodeResponse = {
 	vwall = 3 -- Stops propagating the event to the children of the current node, but not to the children of the parent node
 }
 
+DefaultNodeEvents = {
+	"on_add_children",
+	"on_delete"
+}
+
 Node.children = {}; -- This is so funny to me
 
 -- Generates an UUID
@@ -217,6 +222,7 @@ end
 
 -- Safely deletes the node and the references in the parent node
 function Node:delete()
+	if self.on_delete then self:on_delete() end
 	if self.parent then -- If the node has a parent...
 		table.remove(self.parent.children, self.child_index); -- we remove it from the parent's children table
 		for i, v in ipairs(self.parent.children) do -- we update the children index of all the remaining childrens from the parent
@@ -230,7 +236,7 @@ function Node:delete()
 end
 
 -- Deletes all the children's nodes
-function Node:delete_all()
+function Node:delete_all_children()
 	for i, v in r_ipairs(self.children) do
 		v:delete();
 	end

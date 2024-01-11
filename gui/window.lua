@@ -5,7 +5,7 @@ dnkWindow = dnkElement:extend("dnkWindow")
 
 -- TODO: Conditions are getting worse over time by the amount
 function dnkWindow:init(parent, x, y, w, h, skin, id, title)
-	dnkWindow.super.init(self, parent, nil, x, y);
+	dnkWindow.super.init(self, parent, id, x, y);
 		
 	self.w = w
 	self.h = h

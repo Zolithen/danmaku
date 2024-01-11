@@ -14,8 +14,10 @@ function dnkFloatingList:init(parent, name, x, y, label)
 	end);
 end
 
-function dnkFloatingList:add_to_list()
-	
+function dnkFloatingList:add_to_list(str)
+	table.insert(self.list, str);
+	dnkLabel(self.tooltip, "label_" .. str, 0, self.tooltip.content_height, str);
+	self.tooltip:calculate_content_height();
 end
 
 dnkListTooltip = dnkTooltip:extend("dnkListTooltip");
@@ -24,9 +26,9 @@ function dnkListTooltip:init(parent, name, list, x, y, w, h)
 	dnkTooltip.init(self, parent, name, x, y, w, h);
 	self.on = false;
 	self.list = list;
-	for i = 1, 32 do
+	--[[for i = 1, 32 do
 		dnkLabel(self, "label" .. i, 0, (i-1)*16, i);
-	end
+	end]]
 	self:calculate_content_height();
 end
 
@@ -37,6 +39,7 @@ function dnkListTooltip:mousepressed(x, y, b)
 	local item = math.floor(my/16) + 1;
 	if item <= #self.list.list then
 		self.list.selected_item = item;
+		self.list:call("item_select");
 		gui:unfloat();
 		self:remove_from_parent(); 
 	end

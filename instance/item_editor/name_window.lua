@@ -5,6 +5,7 @@ function WindowTCEdit:init(parent, x, y, skin, id, title)
 
 	dnkButton(self, "close_button", 0, 0, "Hide window"):connect("press", function(button)
 		self:remove_from_parent();
+		self:propagate_event("window_close");
 	end);
 
 	self.main_input = dnkTextInput(self, "main_input", 0, 120, 100, 16):connect("update_text", function(inp)
@@ -24,11 +25,13 @@ function WindowTCEdit:init(parent, x, y, skin, id, title)
 		self:change_current_section();
 	end)
 
-	self.color_picker = dnkColorPicker(self, "color_picker", 0, 200, 200, 200):connect("color_change", function(picker)
+	--[[self.color_picker = dnkColorPicker(self, "color_picker", 0, 200, 200, 200):connect("color_change", function(picker)
 		local r, g, b = picker:picked_color();
 		self.section_data[2*self.cur_sec - 1].color = {r, g, b, 1};
 		self:update_display();
-	end);
+	end);]]
+	self.color = ColorComponent(self, "current_color", 0, 200);
+	ColorComponent(self, "test_color", 0, 236);
 
 	self.section_label = dnkLabel(self, "section_label", 0, 160, "1/1");
 	self.display_label = dnkFmtLabel(self, "display_label", 0, 180);
@@ -74,7 +77,8 @@ end
 -- This function just updates the text input & switches correctly
 function WindowTCEdit:change_current_section()
 	local color = self.section_data[self.cur_sec*2 - 1].color;
-	self.color_picker:set_color(color[1], color[2], color[3]);
+	self.color:set_color(color[1], color[2], color[3]);
+	--self.color_picker:set_color(color[1], color[2], color[3]);
 	self.main_input:set_text(self.section_data[self.cur_sec*2]);
 	self.bold.input.on = self.section_data[self.cur_sec*2 - 1].bold;
 	self.italic.input.on = self.section_data[self.cur_sec*2 - 1].italic;

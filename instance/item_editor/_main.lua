@@ -161,7 +161,27 @@ dnkButton(windows.projects, "new_project", 0, 300-16, "New Project"):connect("pr
 	project_panel:calculate_content_height();
 end);
 
-dnkFloatingList(windows.color, "list", 200, 0, "testt");
+local test_list = dnkFloatingList(windows.color, "list", 200, 0, "testt");
+test_list:add_to_list("white");
+test_list:add_to_list("orange");
+test_list:add_to_list("magenta");
+test_list:add_to_list("light blue");
+test_list:add_to_list("yellow");
+test_list:add_to_list("lime");
+test_list:add_to_list("pink");
+test_list:add_to_list("gray");
+test_list:add_to_list("light gray");
+test_list:add_to_list("cyan");
+test_list:add_to_list("purple");
+test_list:add_to_list("blue");
+test_list:add_to_list("brown");
+test_list:add_to_list("red");
+test_list:add_to_list("green");
+test_list:add_to_list("black");
+
+test_list:connect("item_select", function()
+	print("selected something");
+end)
 --[[local tlt = dnkTooltip(floatgui, "test", 200, 200, 150, 128);
 dnkLabel(tlt, "label", 0, 0, "This is a tooltip");]]
 
