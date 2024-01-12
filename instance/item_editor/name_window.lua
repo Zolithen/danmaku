@@ -30,8 +30,11 @@ function WindowTCEdit:init(parent, x, y, skin, id, title)
 		self.section_data[2*self.cur_sec - 1].color = {r, g, b, 1};
 		self:update_display();
 	end);]]
-	self.color = ColorComponent(self, "current_color", 0, 200);
-	ColorComponent(self, "test_color", 0, 236);
+	self.color = ColorComponent(self, "current_color", 0, 200, title):connect("color_change", function()
+		local r, g, b = unpack(self.color.color);
+		self.section_data[2*self.cur_sec - 1].color = {r, g, b, 1};
+		self:update_display();
+	end);
 
 	self.section_label = dnkLabel(self, "section_label", 0, 160, "1/1");
 	self.display_label = dnkFmtLabel(self, "display_label", 0, 180);
@@ -46,6 +49,15 @@ function WindowTCEdit:init(parent, x, y, skin, id, title)
 	self.max_sec = 0;
 	self.section_data = {}
 	self:new_section();
+end
+
+function WindowTCEdit:set_title(text)
+	WindowTCEdit.super.set_title(self, text);
+	if self.color == nil then return end;
+	self.color.label = text;
+	if self.color.bound == true then
+		self.color.color_window.mod_label:set_text(text);
+	end
 end
 
 function WindowTCEdit:new_section()

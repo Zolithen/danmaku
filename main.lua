@@ -26,6 +26,8 @@ function love.load(args)
 	gui_instance(winc);
 end
 
+local gbc_time = 0;
+
 function love.update(dt)
 	gui:propagate_event("update", dt);
 	floatgui:propagate_event("update", dt);
@@ -33,6 +35,12 @@ function love.update(dt)
 	if other_update then
 		other_update(dt);
 	end
+
+	if gbc_time >= 2 then
+		collectgarbage();
+		gbc_time = 0;
+	end
+	gbc_time = gbc_time + dt;
 end
 
 function love.draw()

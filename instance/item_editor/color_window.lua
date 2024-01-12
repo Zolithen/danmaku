@@ -21,14 +21,15 @@ end
 
 function ColorWindow:bind_to_component(comp)
 	gui:focus_window(self.child_index);
-	--if self.bound_to then self.bound_to.bound = false end;
+	self.mod_label:set_text(comp.label);
+	if self.bound_to then self.bound_to.bound = false end;
 	self.bound_to = comp;
 	comp.bound = true;
-	self.color_picker:set_color(comp.color[1], comp.color[2], comp.color[3]);
+	self.color_picker:_set_color(comp.color[1], comp.color[2], comp.color[3]);
 end
 
 function ColorWindow:component_is_gone()
-	--if self.bound_to then self.bound_to.bound = false end;
+	if self.bound_to then self.bound_to.bound = false end;
 	self.bound_to = nil;
 	self.mod_label:set_text("Nothing");
 end

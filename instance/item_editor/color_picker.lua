@@ -152,13 +152,18 @@ function dnkColorPicker:_set_color(r, g, b)
 	self.value_slider.boxx = v*self.value_slider.w;
 
 	self.value_slider:update_color(h, s);
-	self:call("color_change");
+	
+	self.fields.r.input:set_text(tostring(math.floor(r*255)));
+	self.fields.g.input:set_text(tostring(math.floor(g*255)));
+	self.fields.b.input:set_text(tostring(math.floor(b*255)));
 end
 
 
-function ColorComponent:init(parent, name, x, y)
+-- TODO: This coding of the color stuff how it's updated and the like is really messy
+function ColorComponent:init(parent, name, x, y, label)
 	ColorComponent.super.init(self, parent, name, x, y, 32, 32);
 
+	self.label = label;
 	self.bound = false;
 	self.color = {1, 1, 1, 1};
 	self.color_window = gui:find_name_in_children("color"); -- TODO: This assumes the color window is always open. FIXME
@@ -185,6 +190,8 @@ function ColorComponent:set_color(r, g, b)
 	self.color[3] = b;
 
 	if self.bound then
-		self.color_window.color_picker:set_color(r, g, b);
+		self.color_window.color_picker:_set_color(r, g, b);
 	end
+
+	self:call("color_change");
 end
