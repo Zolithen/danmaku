@@ -5,6 +5,7 @@ gui.path = ...;
 gui.windows = {};
 gui.android = love.system.getOS() == "Android";
 gui.is_floating = false;
+gui.should_unfloat = 0;
 
 ll = function(path)
 	require(gui.path .. "." .. path);
@@ -27,6 +28,7 @@ ll("text_input");
 ll("slider");
 ll("on_off_button");
 ll("text_label_complex");
+ll("image");
 
 ll("floating_list");
 ll("field");
@@ -52,9 +54,15 @@ function gui:unfloat()
 	self.is_floating = false;
 end
 
+function gui:unfloat_safely()
+	self.should_unfloat = 10;
+end
+
 -- Cool
 
 function gui:update()
+	if self.should_unfloat >= 0 then self.should_unfloat = self.should_unfloat - 1 end
+	if self.should_unfloat == 0 then self.is_floating = false end;
 	if self.is_floating then return NodeResponse.stop end;
 end
 

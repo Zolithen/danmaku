@@ -12,7 +12,7 @@ function dnkGroup:draw_after_children()
 	lg.translate(-self.x, -self.y);
 end
 
-function dnkGroup:update() -- TODO: Change all occurences of parent.focused to holder.focused or some bullshit
+function dnkGroup:update(dt) -- TODO: Change all occurences of parent.focused to holder.focused or some bullshit
 	dnkElement.update(self, dt);
 	self.focused = self.parent.focused;
 end

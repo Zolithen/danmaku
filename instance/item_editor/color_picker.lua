@@ -5,8 +5,8 @@
 
 local ValueSlider = dnkSlider:extend("ValueSlider");
 local ColorSlider = dnkSlider:extend("ColorSlider");
-ColorComponent = dnkClickableArea:extend("ColorComponent");
 dnkColorPicker = dnkGroup:extend("dnkColorPicker");
+ColorComponent = dnkClickableArea:extend("ColorComponent");
 
 function ValueSlider:init(parent, name, x, y, w, h, start_h, start_s)
 	dnkSlider.init(self, parent, name, x, y, w, h);

@@ -7,7 +7,7 @@ end
 function r_ipairs(t)
     return reversedipairsiter, t, #t + 1
 end
-function create_30log()
+local function create_30log()
 local next, assert, pairs, type, tostring, setmetatable, baseMt, _instances, _classes, _class = next, assert, pairs, type, tostring, setmetatable, {}, setmetatable({},{__mode = 'k'}), setmetatable({},{__mode = 'k'})
 local function assert_call_from_class(class, method) assert(_classes[class], ('Wrong method call. Expected class:%s.'):format(method)) end; local function assert_call_from_instance(instance, method) assert(_instances[instance], ('Wrong method call. Expected instance:%s.'):format(method)) end
 local function bind(f, v) return function(...) return f(v, ...) end end

@@ -1,7 +1,7 @@
 WindowTCEdit = dnkWindow:extend("WindowTCEdit");
 
 function WindowTCEdit:init(parent, x, y, skin, id, title)
-	WindowTCEdit.super.init(self, parent, x, y, 200, 500, skin, id, title);
+	WindowTCEdit.super.init(self, parent, x, y, 200, 240, skin, id, title);
 
 	dnkButton(self, "close_button", 0, 0, "Hide window"):connect("press", function(button)
 		self:remove_from_parent();
@@ -24,6 +24,8 @@ function WindowTCEdit:init(parent, x, y, skin, id, title)
 		self.cur_sec = math.min(self.max_sec, self.cur_sec + 1);
 		self:change_current_section();
 	end)
+
+	self.item_sprite = dnkImage(self, "sprite", 0, 240):set_image("assets/gfx/test_image.png");
 
 	--[[self.color_picker = dnkColorPicker(self, "color_picker", 0, 200, 200, 200):connect("color_change", function(picker)
 		local r, g, b = picker:picked_color();

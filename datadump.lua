@@ -10,7 +10,11 @@ function element_tostring(e, key, table_level, tabs)
 		else
 			local m = "<br>"
 			if e.class then
-				m = "class&lt" .. e.class.name .. "&gt" .. m;
+				if e.class.name == nil then
+					m = "class&ltNIL_CLASS&gt" .. m;
+				else
+					m = "class&lt" .. e.class.name .. "&gt" .. m;
+				end
 			end
 			return m .. dump_table1(e, table_level, tabs);
 		end

@@ -31,8 +31,9 @@ function dnkWindow:init(parent, x, y, w, h, skin, id, title)
 	self.doy = 0
 
 	-- Scrollbar parameters
-	self.maxw = 0
-	self.maxh = 0
+	-- TODO: If it crashes on the 15/01 then the problem is probably this
+	--self.maxw = 0
+	--self.maxh = 0
 
 	self.canvas = lg.newCanvas(w, h+self.bar_height);
 end

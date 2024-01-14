@@ -40,17 +40,11 @@ function dnkButton:draw()
 end
 
 function dnkButton:mousepressed(x, y, b)
-	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY())
-	if (self.parent:is_mouse_over() and b == 1 and self.parent.focused and math.point_in_box(mx, my, self:box_full())) then
-		self.focused = true;
-	end
+	return dnkClickableElement.mousepressed(self, x, y, b);
 end
 
 function dnkButton:mousereleased(x, y, b)
-	if self.focused then
-		self:call("press");
-	end
-	self.focused = false;
+	return dnkClickableElement.mousereleased(self, x, y, b);
 end
 
 function dnkButton:set_text(t)

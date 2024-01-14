@@ -36,13 +36,15 @@ function dnkTooltip:draw_after_children()
 	lg.draw(self.canvas, self.x, self.y);
 end
 
+-- TODO: This is kinda stupid: If we don't click a tooltip, should it dissapear?
+-- SOLUTION: All floating gui stuff shouldn't be just tooltips.
 function dnkTooltip:mousepressed(x, y, b)
 	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if math.point_in_box(mx, my, self:box_full()) then
 		floatgui.pressed = true;
 	else
 		self:remove_from_parent();
-		return;
+		return NodeResponse.vwall;
 	end
 end
 

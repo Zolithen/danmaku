@@ -23,7 +23,7 @@ function love.load(args)
 	if gui_instance == nil then
 		error(e);
 	end
-	gui_instance(winc);
+	gui_instance();
 end
 
 local gbc_time = 0;
@@ -81,7 +81,8 @@ end
 function love.mousepressed(x, y, b)
 	floatgui.pressed = false;
 	floatgui:propagate_event_reverse("mousepressed", x, y, b);
-	if floatgui.pressed == false or #floatgui.children == 0 then -- TODO: Add a keybind to unfloat the gui
+	-- TODO: If there are not children to floatgui, should we unfloat the gui?
+	if floatgui.pressed == false then -- TODO: Add a keybind to unfloat the gui
 		gui:unfloat();
 	end
 	gui:propagate_event_reverse("mousepressed", x, y, b);
@@ -99,10 +100,6 @@ function love.keypressed(key, scancode, is_repeat)
 	if other_keypressed then
 		other_keypressed(key, scancode, is_repeat);
 	end
-	--[[if key == "f4" then
-		local gui_instance = loadstring(get_file("instance/item_editor.lua"))
-		gui_instance(winc);
-	end]]
 end
 
 function love.textinput(t)
