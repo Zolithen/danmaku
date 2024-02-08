@@ -19,7 +19,7 @@ function love.load(args)
 		love.window.setFullscreen(true);
 	end
 
-	local gui_instance, e = loadstring(get_file("instance/item_editor/_main.lua"));
+	local gui_instance, e = loadstring(get_file("instance/music_player.lua"));
 	if gui_instance == nil then
 		error(e);
 	end

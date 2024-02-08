@@ -78,6 +78,55 @@ function math.rgb2hsv(r, g, b, a)
 	return h, s, v, a;
 end
 
+function table.insert_everything(t, ...)
+	local others = {...};
+	for it, other in ipairs(others) do
+		for i, v in ipairs(other) do
+			table.insert(t, v)
+		end
+	end	
+end
+
+function table.simple_copy(t)
+	local ret = {}
+	for i, v in pairs(t) do
+		if type(v) == "function" or type(v) == "userdata" then
+			error("Can't copy a table with functions inside.");
+		end
+		if type(v) == "table" then
+			ret[i] = table.simple_copy(v);
+		else
+			ret[i] = v;
+		end
+	end
+	return ret;
+end
+
+_utf8 = {};
+function _utf8.sub(text, i, j)
+	if j == -1 then
+		return {utf8.codepoint(text, utf8.offset(text, i), utf8.offset(text, utf8.len(text)))}
+	end
+	return j ~= 0 and {utf8.codepoint(text, utf8.offset(text, i), utf8.offset(text, j))} or {}
+end
+
+function _utf8.from(text)
+	return {utf8.codepoint(text, 1, utf8.offset(text, utf8.len(text)))};
+end
+
+function _utf8.from_safe(text)
+	local len = utf8.len(text);
+	if len == 0 then
+		return {};
+	else
+		return {utf8.codepoint(text, 1, utf8.offset(text, len))};
+	end
+end
+
+function _utf8.to(t)
+	return utf8.char(unpack(t));
+end
+
 local function reversedipairsiter(t, i)
     i = i - 1
     if i ~= 0 then

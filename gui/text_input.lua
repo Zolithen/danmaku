@@ -78,20 +78,20 @@ function dnkTextInput:keypressed(key, scancode, is_repeat)
 	-- Something will definitely be off here
 	if not self.focused then return end;
 	if key == "backspace" then
-		local first = utf8.offset(self.text, self.cursor_pos);
-		local second = utf8.offset(self.text, self.cursor_pos+1);
+		if self.cursor_pos > 0 then
+			local char_list = self.cursor_pos ~= 1 and _utf8.sub(self.text, 1, self.cursor_pos-1) or {};
+			table.insert_everything(
+				char_list,
+				_utf8.sub(self.text, self.cursor_pos+1, -1)
+			);
 
-        if first and self.cursor_pos ~= 0 then
-        	if second then
-				self.text = string.sub(self.text, 1, first-1) .. string.sub(self.text, second, -1);
-        	else
-            	self.text = string.sub(self.text, 1, first-1);
-        	end
-            self.cursor_pos = self.cursor_pos - 1;
-        end
-        self:call("update_text");
+			self.text = _utf8.to(char_list);
+			self.cursor_pos = self.cursor_pos - 1;
+
+        	self:call("update_text");
+    	end
 	elseif key == "right" then
-		self.cursor_pos = math.min(string.len(self.text), self.cursor_pos + 1);
+		self.cursor_pos = math.min(utf8.len(self.text), self.cursor_pos + 1);
 	elseif key == "left" then
 		self.cursor_pos = math.max(0, self.cursor_pos - 1);
 	elseif key == "return" then -- TODO: How the fuck are we gonna do events?
@@ -107,13 +107,20 @@ end
 
 function dnkTextInput:textinput(t)
 	if self.focused then
-		if self.cursor_pos == 0 then
-			self.text = t .. string.sub(self.text, utf8.offset(self.text, self.cursor_pos), -1);
+		if utf8.len(self.text) == 0 then
+			self.text = utf8.char(utf8.codepoint(t));
+			self.cursor_pos = self.cursor_pos + 1;
 		else
-			self.text = string.sub(self.text, 1, utf8.offset(self.text, self.cursor_pos)) .. t .. string.sub(self.text, utf8.offset(self.text, self.cursor_pos)+1, -1);
+			local char_list = _utf8.sub(self.text, 1, self.cursor_pos);
+			table.insert_everything(
+				char_list,
+				_utf8.from(t),
+				_utf8.sub(self.text, self.cursor_pos+1, -1)
+			);
+
+			self.text = _utf8.to(char_list);
+			self.cursor_pos = self.cursor_pos + 1; -- POTENTIAL: Assumes textinput only gets one character at a time
 		end
-		--self.text = self.text .. t;
-		self.cursor_pos = self.cursor_pos + 1; -- POTENTIAL: This assumes textinput only gets one char at a time. Is it true?
 		self:call("update_text");
 	end
 	self:update_drawable_text();
@@ -127,7 +134,8 @@ function dnkTextInput:update_drawable_text()
 		self.text_at_cursor = love.graphics.newText(gui.Skin.font, "");
 	else
 		-- I hate UNICODE (FIXME)
-		self.text_at_cursor = love.graphics.newText(gui.Skin.font, string.sub(self.text, 1, utf8.offset(self.text, self.cursor_pos) ));
+		--self.text_at_cursor = love.graphics.newText(gui.Skin.font, string.sub(self.text, 1, utf8.offset(self.text, self.cursor_pos) ));
+		self.text_at_cursor = love.graphics.newText(gui.Skin.font, _utf8.to( _utf8.sub(self.text, 1, self.cursor_pos) ));
 	end
 
 	-- Update the scrolling

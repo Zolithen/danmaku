@@ -1,6 +1,7 @@
 dnkButton = dnkElement:extend("dnkButton");
 
 -- A text button can be a group with a dnkClickableArea and dnkLabel as children! (OOP brainrot)
+-- This begs the question: should elements just be a bag of components? (ECS brainrot)
 function dnkButton:init(parent, name, x, y, text)
 	dnkButton.super.init(self, parent, name, x, y);
 	self.text = text;
