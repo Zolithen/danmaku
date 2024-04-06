@@ -19,7 +19,7 @@ function love.load(args)
 		love.window.setFullscreen(true);
 	end
 
-	local gui_instance, e = loadstring(get_file("instance/music_player.lua"));
+	local gui_instance, e = loadstring(get_file("instance/layout_tests.lua"));
 	if gui_instance == nil then
 		error(e);
 	end
@@ -107,11 +107,11 @@ function love.textinput(t)
 	floatgui:propagate_event_reverse("textinput", t);
 end
 
-function love.resize()
+function love.resize(nw, nh)
 	gui:propagate_event_reverse("love_resize_window");
 	floatgui:propagate_event_reverse("love_resize_window");
 	if other_resize then
-		other_resize();
+		other_resize(nw, nh);
 	end
 end
 

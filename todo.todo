@@ -1,3 +1,10 @@
+
+-== THINGS THAT MAY BE IMPORTANT TO KEEP IN MIND BUT ACTUALLY AREN'T AND IT'S JUST PROBABLY ME BEING SHITE AT PROGRAMMING ==-
+- Make visuals update when needed instead of always
+-> GPU Usage with fullscreen and some windows is about 25% (SOMETIMES. I FUCKING HATE THIS, now it's at 6.4%), it shouldn't be that high.
+-> This would make perpetually updating elements harder to do, and something to be careful with.
+
+
 +- Fix dnkGroup content height (update it's box_full or something?)
 +- Put all the binding code for the slider in the slider class
 
@@ -8,7 +15,7 @@
 -> Main performance concern is going to be the GPU though
 - Ensure if a window is minimized then all the correct events get vwalled
 - Add some reliable stuff for closing & hiding windows
-- Do we need to do type checks?
+- Do we need to do type checks? Fuck no
 - Make a floating system that doesn't suck pls
 - Android support
 - Know what to do with the Skin (currently using one global variable gui.Skin, probably not good)
