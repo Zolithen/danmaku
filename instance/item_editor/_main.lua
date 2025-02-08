@@ -88,9 +88,14 @@ windows.projects = dnkWindow(gui, 0, 0, 300, 304, gui.Skin, "projects", "Project
 windows.color = ColorWindow(gui, 400, 0, 300, 300, gui.Skin, "color", "Colors");
 windows.projects.expandable = false;
 
-local project_panel = dnkPanel(windows.projects, "panel", 0, 0, 300, 300-16)
-local project_slider = dnkSlider(windows.projects, "slider", 300-16, 0, 16, 304):bind(project_panel);
-local project_list = Stacker(project_panel, "project_list", 0, 0);
+local project_panel = dnkPanel(windows.projects, "panel", 0, 16, 300, 300-16)
+local project_slider = dnkSlider(windows.projects, "slider", 300-16, 16, 16, 304):bind(project_panel);
+local project_list = Stacker(project_panel, "project_list", 0, 16);
+
+local test_window = dnkWindow(gui, 0, 400, 300, 300, gui.Skin, "test", "Test Elements");
+dnkImage(test_window, "test_image", 0, 16):set_image("assets/gfx/test_image.png");
+dnkCheckbox(test_window, "test_checkbox")
+
 
 --project_list:calculate_content_height();
 
@@ -116,10 +121,10 @@ function Project:create_window()
 	if not self.window then
 		self.window = dnkWindow(gui, 0, 0, 300, 304, gui.Skin, "project_" .. self.name, self.name);
 		self.window.closable = true;
-		self._close = dnkButton(self.window, "close_button", 0, 0, "Hide window"):connect("press", function(button)
+		self._close = dnkButton(self.window, "close_button", 0, 16, "Hide window"):connect("press", function(button)
 			self.window:remove_from_parent();
 		end);
-		self._pname = dnkField(self.window, "pname_field", 0, 20, "Project name", dnkField.type.text);
+		self._pname = dnkField(self.window, "pname_field", 0, 36, "Project name", dnkField.type.text);
 		self._pname.input:connect("finish_text", function(input)
 			self.name = input.text;
 			self.window:set_title(self.name);
@@ -127,18 +132,18 @@ function Project:create_window()
 			self.name_window:set_title(self.name .. " Name");
 			self.enchant_window:set_title(self.name .. " Enchants");
 		end);
-		self._id = dnkField(self.window, "id_field", 0, 40, "Item ID", dnkField.type.text);
-		self._count = dnkField(self.window, "count_field", 0, 60, "Count", dnkField.type.number);
+		self._id = dnkField(self.window, "id_field", 0, 56, "Item ID", dnkField.type.text);
+		self._count = dnkField(self.window, "count_field", 0, 76, "Count", dnkField.type.number);
 		self._count.input.w = 30;
 
-		self._iname_button = dnkButton(self.window, "item_name_button", 0, 80, "Edit Name"):connect("press", function(button)
+		self._iname_button = dnkButton(self.window, "item_name_button", 0, 96, "Edit Name"):connect("press", function(button)
 			if not self.name_window.parent then
 				gui:add(self.name_window);
 				gui:focus_window(self.name_window.child_index);
 			end
 		end);
 
-		self._enchant_button = dnkButton(self.window, "enchant_button", 0, 110, "Edit Enchants"):connect("press", function(button)
+		self._enchant_button = dnkButton(self.window, "enchant_button", 0, 126, "Edit Enchants"):connect("press", function(button)
 			if not self.enchant_window.parent then
 				gui:add(self.enchant_window);
 				gui:focus_window(self.enchant_window.child_index);
@@ -152,7 +157,7 @@ function Project:create_window()
 	end
 end
 
-dnkButton(windows.projects, "new_project", 0, 300-16, "New Project"):connect("press", function(self)
+dnkButton(windows.projects, "new_project", 0, 300, "New Project"):connect("press", function(self)
 	local proj = Project("Project " .. #projects)
 	table.insert(projects, proj);
 	proj.open_button = dnkButton(project_list, "p" .. (#projects - 1), 0, 0, "Project " .. (#projects - 1)):connect("press", function(self)

@@ -3,49 +3,49 @@ WindowTCEdit = dnkWindow:extend("WindowTCEdit");
 function WindowTCEdit:init(parent, x, y, skin, id, title)
 	WindowTCEdit.super.init(self, parent, x, y, 200, 240, skin, id, title);
 
-	dnkButton(self, "close_button", 0, 0, "Hide window"):connect("press", function(button)
+	dnkButton(self, "close_button", 0, 16, "Hide window"):connect("press", function(button)
 		self:remove_from_parent();
 		self:propagate_event("window_close");
 	end);
 
-	self.main_input = dnkTextInput(self, "main_input", 0, 120, 100, 16):connect("update_text", function(inp)
+	self.main_input = dnkTextInput(self, "main_input", 0, 136, 100, 16):connect("update_text", function(inp)
 		self.section_data[self.cur_sec*2] = inp.text;
 		self:update_display();
 	end);
 
-	dnkButton(self, "new_section", 30, 140, "New section"):connect("press", function(button)
+	dnkButton(self, "new_section", 30, 156, "New section"):connect("press", function(button)
 		self:new_section();
 	end)
-	dnkButton(self, "last_section", 0, 140, "<-"):connect("press", function(button)
+	dnkButton(self, "last_section", 0, 156, "<-"):connect("press", function(button)
 		self.cur_sec = math.max(1, self.cur_sec - 1);
 		self:change_current_section();
 	end)
-	dnkButton(self, "next_section", 132, 140, "->"):connect("press", function(button)
+	dnkButton(self, "next_section", 132, 156, "->"):connect("press", function(button)
 		self.cur_sec = math.min(self.max_sec, self.cur_sec + 1);
 		self:change_current_section();
 	end)
 
-	self.item_sprite = dnkImage(self, "sprite", 0, 240):set_image("assets/gfx/test_image.png");
+	self.item_sprite = dnkImage(self, "sprite", 0, 256):set_image("assets/gfx/test_image.png");
 
 	--[[self.color_picker = dnkColorPicker(self, "color_picker", 0, 200, 200, 200):connect("color_change", function(picker)
 		local r, g, b = picker:picked_color();
 		self.section_data[2*self.cur_sec - 1].color = {r, g, b, 1};
 		self:update_display();
 	end);]]
-	self.color = ColorComponent(self, "current_color", 0, 200, title):connect("color_change", function()
+	self.color = ColorComponent(self, "current_color", 0, 216, title):connect("color_change", function()
 		local r, g, b = unpack(self.color.color);
 		self.section_data[2*self.cur_sec - 1].color = {r, g, b, 1};
 		self:update_display();
 	end);
 
-	self.section_label = dnkLabel(self, "section_label", 0, 160, "1/1");
-	self.display_label = dnkFmtLabel(self, "display_label", 0, 180);
+	self.section_label = dnkLabel(self, "section_label", 0, 176, "1/1");
+	self.display_label = dnkFmtLabel(self, "display_label", 0, 196);
 
-	self.bold = dnkField(self, "bold", 0, 20, "Bold", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
-	self.italic = dnkField(self, "italic", 0, 40, "Italic", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
-	self.strike = dnkField(self, "strike", 0, 60, "Strikethrough", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
-	self.underline = dnkField(self, "underline", 0, 80, "Underline", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
-	self.obfuscated = dnkField(self, "obfuscated", 0, 100, "Obfuscated", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
+	self.bold = dnkField(self, "bold", 0, 36, "Bold", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
+	self.italic = dnkField(self, "italic", 0, 56, "Italic", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
+	self.strike = dnkField(self, "strike", 0, 76, "Strikethrough", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
+	self.underline = dnkField(self, "underline", 0, 96, "Underline", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
+	self.obfuscated = dnkField(self, "obfuscated", 0, 116, "Obfuscated", dnkField.type.check):connect("press", self:_switch_modify_cur_sec());
 
 	self.cur_sec = 1;
 	self.max_sec = 0;

@@ -8,26 +8,35 @@
 +- Fix dnkGroup content height (update it's box_full or something?)
 +- Put all the binding code for the slider in the slider class
 
+
+
+
+- Replace transform_vector with transform_vector_raw's functionality and add some kind of global scaling 
+-> I need to see if anything more gets broken with this change and fix it
+- Add init method docs to the docs
 - You can click things on the window behind the title bar
 - Make the slider work with the scroll wheel
 - UTF8 sucks, fix the text inputs randomly crashing
-- If performance is bad we could start caching stuff like get_root calls
+- If performance is bad we could start caching stuff like get_root calls (stupid tbh)
 -> Main performance concern is going to be the GPU though
 - Ensure if a window is minimized then all the correct events get vwalled
 - Add some reliable stuff for closing & hiding windows
 - Do we need to do type checks? Fuck no
-- Make a floating system that doesn't suck pls
+*- Change the library so that it doesn't have to live on global memory space i.e. make "gui" node not global
+- Make a floating system that doesn't suck pls -> Do modals
 - Android support
 - Know what to do with the Skin (currently using one global variable gui.Skin, probably not good)
 - Add hex field to the color picker
 - Make positioning elements not a pain
 -> Layout system I guess
+- Elements dont kill events for elements behind them most of the time
 
 - GUI Elements & Stuff:
 	- Lists
 	- Bigger text fields
 	- Serializers
-	- Do scenes or something to change & update stuff easily -> Layouters
+	- Do scenes or something to change & update stuff easily -> Layouters & States
 
 -- An immediate parent of an element is always a holder.
+--- We need to change this and not be as liberal for parents - not every GUI is going to be an insane contraption of nested stuff
 -- If using scroll bars, call calculate_content_height on the panel after adding children for everything to update correctly

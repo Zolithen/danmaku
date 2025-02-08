@@ -269,7 +269,7 @@ function Node:get_root_(i)
 	return self, i - 1;
 end
 
--- Returns the given vector in the Node's local coordinate system 
+-- Returns the given vector in the Node's local coordinate system (global -> local)
 -- x : Number -> X Coord
 -- y : Number -> Y Coord
 -- &: (Number, Number) -> Transformed coordinates

@@ -19,7 +19,7 @@ function love.load(args)
 		love.window.setFullscreen(true);
 	end
 
-	local gui_instance, e = loadstring(get_file("instance/layout_tests.lua"));
+	local gui_instance, e = loadstring(get_file("instance/item_editor/_main.lua"));
 	if gui_instance == nil then
 		error(e);
 	end
@@ -71,6 +71,10 @@ end
 function love.mousemoved(x, y, dx, dy)
 	gui:propagate_event_reverse("mousemoved", x, y, dy, dx);
 	floatgui:propagate_event_reverse("mousemoved", x, y, dy, dx);
+
+	if other_mousemoved then
+		other_mousemoved(x, y, dx, dy)
+	end
 end
 
 function love.mousereleased(x, y, b)
@@ -86,6 +90,10 @@ function love.mousepressed(x, y, b)
 		gui:unfloat();
 	end
 	gui:propagate_event_reverse("mousepressed", x, y, b);
+
+	if other_mousepressed then
+		other_mousepressed(x, y, b)
+	end
 end
 
 function love.wheelmoved(dx, dy)

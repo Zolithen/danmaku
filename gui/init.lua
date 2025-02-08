@@ -6,6 +6,7 @@ gui.windows = {};
 gui.android = love.system.getOS() == "Android";
 gui.is_floating = false;
 gui.should_unfloat = 0;
+gui.global_scale_factor = 1;
 
 ll = function(path)
 	require(gui.path .. "." .. path);
@@ -33,6 +34,8 @@ ll("image");
 ll("tree_list");
 ll("floating_list");
 ll("field");
+
+dnkGui = dnkElement:extend("dnkGui")
 
 function gui:focus_window(index)
 	local window_to_focus = self.children[index];

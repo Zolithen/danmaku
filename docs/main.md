@@ -6,7 +6,7 @@ The parent class of all GUI elements even floating ones is `dnkElement`, which e
 GUI events are simple: if you want to run some function when a certain event of a certain element happens, run `dnkElement:connect` with the name of the event and the function you want to call.
 
 # API Reference
-Fields marked with `read-only` shouldn't be modified. Each class's methods list doesn't list Stunenca events, for example `draw` or `mousepressed`, as these should only be called via `Node:propagate_event` and `Node:propagate_event_reverse` in the root node. They also don't list inherited methods.
+Fields marked with `read-only` shouldn't be modified. Each class' methods list doesn't list Stunenca events, for example `draw` or `mousepressed`, as these should only be called via `Node:propagate_event` and `Node:propagate_event_reverse` in the root node. They also don't list inherited methods, except when they change signature. For ease of use, the `init` method is always included in each class' doc.
 
 ## dnkWindow
 Extends from `Node`. Has box methods: `bar, main, full, expand, close, minimize`.
@@ -83,6 +83,9 @@ Canvas on which you can draw. This class is so you can extend it, but can also b
 - `canvas : Love.Canvas <read-only>` - The canvas which will be used for drawing.
 
 ### Methods
+- `init(parent : Node, name : String, x : Number, y : Number, w : Number, h : Number) : dnkCanvas`  
+-> Class constructor, creates a canvas at position `(x, y)` and dimensions `(w, h)`.
+
 - `resize(w : Number, h : Number)`  
 -> Releases the current `self.canvas` and creates a new canvas with dimensions `(w, h)`.
 
@@ -100,6 +103,10 @@ Represents a rectangle that you can click.
 - `w, h : Numbers <read-only>` - Width and height.
 - `focused : Bool <read-only>` - Stores if the mouse has pressed the area. The event `press` is only triggered if the mouse is then released on the area.
 
+### Methods
+- `init(parent : Node, name : String, x : Number, y : Number, w : Number, h : Number) : dnkClickableArea`  
+-> Class constructor.
+
 ### Events
 - `press(self : dnkClickableArea)`  
 -> Called when the area has been pressed
@@ -109,6 +116,10 @@ Represents a rectangle that you can click.
 ## dnkGroup
 Extends from `dnkElement`. Has box methods `full`. Is a holder.  
 This element does nothing on it's own, it's made to make it easier to make complex elements which need more than one instance of an element: it's useful for 'grouping' things together. When an element is children of one `dnkGroup`, the coordinates turn local to that group, which makes the job easier.
+
+### Methods
+- `init(parent : Node, name : String, x : Number, y : Number) : dnkGroup`  
+-> Class constructor.
 
 
 
@@ -121,6 +132,9 @@ Shows an image on screen. WIP, as it doesn't allow for much freedom (eg. creatin
 - `image : Love.Image <read-only>` - Image to show. Modify with `dnkImage:set_path`.
 
 ### Methods
+- `init(parent : Node, name : String, x : Number, y : Number) : dnkImage`  
+-> Class constructor.
+
 - `set_image(path : String) : dnkImage`  
 -> Loads the image in `path` and sets it as the image to be shown. Returns `self`.
 
@@ -133,6 +147,10 @@ Represents a simple checkbox.
 ### Fields
 - `on : Bool` - Represents if the checkbox has been checked or not.
 - `focused : Bool <read-only>`
+
+### Methods
+- `init(parent : Node, name : String, x : Number, y : Number) : dnkCheckbox`  
+-> Class constructor.
 
 ### Events
 - `press(self : dnkCheckbox)`  
@@ -152,6 +170,9 @@ A panel is like a window inside a window, but can't be moved. This is similar to
 - `focused : Bool <read-only>`
 
 ### Methods
+- `init(parent : Node, name : String, x : Number, y : Number, w : Number, h : Number) : dnkPanel`  
+-> Class constructor.
+
 - `resize(new_w : Number, new_h : Number)`  
 -> Resizes the panel to dimensions `(new_w, new_h)`.
 
@@ -172,6 +193,9 @@ A simple slider which can work horizontally, vertically or both.
 - `bound_to : dnkPanel <read-only>` - Panel the slider has been bound to. Modify with `dnkSlider:bind` or `dnkSlider:rebind`.
 
 ### Methods
+- `init(parent : Node, name : String, x : Number, y : Number, w : Number, h : Number) : dnkSlider`  
+-> Class constructor.
+
 - `bind(p : dnkPanel)`  
 -> Binds the slider to the panel `p`. This makes it so the panel's `transy` is connected to the slider's `boxy`, so that when the slider is scrolling down the panel is also scrolling down (going up). This takes into account the slider's `h` and the panel's `content_height`, so we may not scroll out of bounds.  
 - `rebind(p: dnkPanel)` 
@@ -196,6 +220,9 @@ Simple button which can be clicked and has text.
 - `texture : Love.Text <read-only>`
 
 ### Methods
+- `init(parent : Node, name : String, x : Number, y : Number, text : String) : dnkButton`  
+-> Class constructor, creates a text button at `(x, y)` with the text `text`. Auto-sizes the button to contain the text.
+
 - `set_text(t : String)`  
 -> Sets the text of the button to be `t`.
 
@@ -220,6 +247,9 @@ Simple one line text input. WIP, as it crashes sometimes.
 - `canvas : Love.Canvas <read-only>`
 
 ### Methods
+- `init(parent : Node, name : String, x : Number, y : Number, w : Number, h : Number) : dnkTextInput`  
+-> Class constructor.
+
 - `set_text(t : String)`  
 -> Sets the text of the input to be `t`. This overwrites anything the user has written.
 
@@ -240,5 +270,8 @@ Text label which can display colors and different text decorations like bold or 
 - `text_w : Number <read-only>` - Width of the text
 
 ### Methods
+- `init(parent : Node, name : String, x : Number, y : Number) : dnkFmtLabel`  
+-> Class constructor.
+
 - `set_text(text_table : Table) : dnkFmtLabel`  
 -> Sets the text of the formatted label.

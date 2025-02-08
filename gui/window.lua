@@ -63,7 +63,7 @@ end
 -- h_ = h + 16 + border_width*2
 -- Canvas switches are expensive! Try switching canvases as least as possible
 function dnkWindow:draw()
-	local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	-- Draw the window border
 	if self.focused then
 		lg.setColor(self:highlight_color(gui.Skin.green));
@@ -112,14 +112,14 @@ function dnkWindow:draw()
 			lg.setCanvas(); -- TODO: Should we reset the canvas every time we switch drawing windows?
 			return NodeResponse.vwall;
 		else
-			lg.translate(0, self.bar_height);
+			--lg.translate(0, self.bar_height);
 		end
 end
 
 function dnkWindow:draw_after_children()
-		local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
+		local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 		if not self.minim then
-			lg.translate(0, -self.bar_height);
+			--lg.translate(0, -self.bar_height);
 		end
 		
 		-- Draw the expand box
@@ -166,7 +166,7 @@ end
 
 -- TODO: Ensure absolutely every GUI element that uses mousepresses doesn't get called when clicking outside the window.
 function dnkWindow:mousepressed(x, y, b)
-	local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	if not math.point_in_box(mx, my, self:box_full()) then
 		return NodeResponse.vwall;
 	end
@@ -251,18 +251,12 @@ end
 -- Turns the given vector into the window's content's CS
 function dnkWindow:transform_vector(x, y)
 	local nx, ny = dnkWindow.super.transform_vector(self, x, y);
-	return nx, ny - self.bar_height;
-end
-
--- Turns the given vector into the window's CS
-function dnkWindow:transform_vector_raw(x, y)
-	local nx, ny = dnkWindow.super.transform_vector(self, x, y);
 	return nx, ny;
 end
 
 -- TODO: Shouldn't we check for is_mouse_over in some events to know if this has happened or some bullshit
 function dnkWindow:is_mouse_over()
-	local mx, my = self:transform_vector_raw(love.mouse.getX(), love.mouse.getY());
+	local mx, my = self:transform_vector(love.mouse.getX(), love.mouse.getY());
 	return math.point_in_box(mx, my, self:box_full());
 end
 

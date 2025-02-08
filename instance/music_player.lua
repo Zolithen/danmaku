@@ -3,10 +3,10 @@ main.movable = false;
 main.minimizable = false;
 main.expandable = false;
 
-local slider = dnkSlider(main, "slider", lg.getWidth()-16, 0, 16, lg.getHeight()-16);
+local slider = dnkSlider(main, "slider", lg.getWidth()-16, 16, 16, lg.getHeight()-16);
 slider.boxw = 16;
 slider.boxh = 24;
-local panel = dnkPanel(main, "panel", 0, 0, lg.getWidth()-16, lg.getHeight()-32);
+local panel = dnkPanel(main, "panel", 0, 16, lg.getWidth()-16, lg.getHeight()-32);
 slider:bind(panel);
 panel.border = false;
 bar = {};
@@ -14,7 +14,7 @@ bar = {};
 layout_amount = 0;
 layout_wide = {};
 
-local dir_bar = dnkGroup(main, "dir_bar", 0, lg.getHeight()-32)
+local dir_bar = dnkGroup(main, "dir_bar", 0, lg.getHeight()-16)
 function draw_rectangle(self)
 	lg.setColor(gui.Skin.back_light);
 	lg.rectangle("fill", self.x, self.y, self.w, self.h);
@@ -154,5 +154,5 @@ function other_resize()
 	slider:state_from_bound();
 
 	dir_bar_rect.w = lg.getWidth()-16;
-	dir_bar.y = lg.getHeight()-32;
+	dir_bar.y = lg.getHeight()-16;
 end
